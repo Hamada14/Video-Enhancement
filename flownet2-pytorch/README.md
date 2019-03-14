@@ -24,11 +24,7 @@ Pytorch implementation of [FlowNet 2.0: Evolution of Optical Flow Estimation wit
 
 The below code can be used to run inference using a model that's stored locally and will produce a `.flo` file for each two consecutive pictures in the dataset folder.
 ```
-python3 main.py --inference --model FlowNet2S --save_flow --save examples/ \
-  --inference_dataset ImagesFromFolder --inference_dataset_root \
-   /home/hamada14/flownet2-pytorch/examples --resume \
-    /home/hamada14/flownet2-pytorch/models/FlowNet2-S_checkpoint.pth.tar \
-     --skip_training --inference_dataset_iext ppm \
+python3 main.py --inference --model FlowNet2S --save_flow --save examples/ --inference_dataset ImagesFromFolder --inference_dataset_root /home/hamada14/Video-Enhancement/flownet2-pytorch/examples --resume /home/hamada14/Video-Enhancement/flownet2-pytorch/models/FlowNet2-S_checkpoint.pth.tar --skip_training --inference_dataset_iext ppm
 ```
 
 ## Displaying `.flo` Files
