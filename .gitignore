@@ -8,7 +8,9 @@ flownet2-pytorch/examples/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
-**/__pycache__/
+flownet2-pytorch/networks/channelnorm_package/__pycache__/
+flownet2-pytorch/networks/correlation_package/__pycache__/
+flownet2-pytorch/networks/__pycache__/
 *.py[cod]
 *$py.class
 

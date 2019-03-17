@@ -8,7 +8,7 @@
 * **pytorch-sepconv**
 
  Pytorch implementation of [Video Frame Interpolation via Adaptive Separable Convolution](https://arxiv.org/abs/1708.01692)
- 
+
 ## FlowNet2
 ### Installation
 
@@ -24,8 +24,17 @@
  * [FlowNet2-SD](https://drive.google.com/file/d/1QW03eyYG_vD-dT-Mx4wopYvtPu_msTKn/view?usp=sharing)[173MB]
 
 
- 2. Run `flownet2-pytorch/install.bash` to install compiles the necessary libraries.
+ 2. Run `flownet2-pytorch/install.bash` to compile the necessary libraries.
 
+ 3. Install the necessary libraries using pip:
+  ```bash
+  $ pip3 install tensorboardX
+  $ pip3 install setproctitle
+  $ pip3 install colorama
+  $ pip3 install tqdm
+  $ pip3 install scipy
+  $ pip3 install pytz
+  ```
 
 ### Demo
 
@@ -36,9 +45,8 @@ The below code can be used to run inference using a model that's stored locally 
 $ export EXAMPLES_DIR=/home/hamada14/Video-Enhancement/flownet2-pytorch/examples
 $ export MODEL_PATH=/home/hamada14/Video-Enhancement/flownet2-pytorch/models/FlowNet2-S_checkpoint.pth.tar
 $ python3 flownet2-pytorch/main.py --inference --model FlowNet2S --save_flow \
-    --save flownet2-pytorch/examples/ --inference_dataset ImagesFromFolder \
-    --inference_dataset_root $EXAMPLES_DIR --resume $MODEL_PATH --skip_training \
-     --inference_dataset_iext ppm
+    --save examples/ --inference_dataset ImagesFromFolder \
+    --inference_dataset_root $EXAMPLES_DIR --resume $MODEL_PATH --inference_dataset_iext ppm
 ```
 
 ### Visualizing Optical Flow
