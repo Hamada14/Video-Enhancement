@@ -15,7 +15,7 @@
 1. Download the FlowNet2 pretrained model to `flownet2-pytorch/models`
 
  The available models are available below:
- * [FlowNet2](https://drive.google.com/file/d/1hF8vS6YeHkx3j2pfCeQqqZGwA_PJq_Da/view?usp=sharing)[620MB]
+ * [FlowNet2](https://drive.google.com/file/d/1hF8vS6YeHkx3j2pfCeQqqZGwA_PJq_Da/view?usp=sharing)[620MB] ** (Please Download this model and avoid changing the name) **
  * [FlowNet2-C](https://drive.google.com/file/d/1BFT6b7KgKJC8rA59RmOVAXRM_S7aSfKE/view?usp=sharing)[149MB]
  * [FlowNet2-CS](https://drive.google.com/file/d/1iBJ1_o7PloaINpa8m7u_7TsLCX0Dt_jS/view?usp=sharing)[297MB]
  * [FlowNet2-CSS](https://drive.google.com/file/d/157zuzVf4YMN6ABAQgZc8rRmR5cgWzSu8/view?usp=sharing)[445MB]
@@ -24,29 +24,23 @@
  * [FlowNet2-SD](https://drive.google.com/file/d/1QW03eyYG_vD-dT-Mx4wopYvtPu_msTKn/view?usp=sharing)[173MB]
 
 
- 2. Run `flownet2-pytorch/install.bash` to compile the necessary libraries.
+ 2. Move the downloaded model to `flownet2/models` directory while keeping its name constant as `FlowNet2_checkpoint.pth.tar`.
 
- 3. Install the necessary libraries using pip:
+ 3. Run `flownet2-pytorch/install.bash` to compile the necessary libraries.
+
+ 4. Install the necessary libraries using pip:
   ```bash
-  $ pip3 install tensorboardX
-  $ pip3 install setproctitle
-  $ pip3 install colorama
-  $ pip3 install tqdm
-  $ pip3 install scipy
-  $ pip3 install pytz
+  $ pip3 install tensorboardX setproctitle colorama tqdm scipy pytz cvbase opencv-python
   ```
 
 ### Demo
 
 The below code can be used to run inference using a model that's stored locally and will produce a `.flo` file for each two consecutive pictures in the dataset folder.
 
-<span style="color:blue">Remember to modify `EXAMPLES_DIR` and `MODEL_PATH` to the directories on your machine.</span>
+There are two demo functions in `flow_model_wrapper.py` that can be used.
+Each of the functions demonstrates either calculating the flow for a specific directory or for a pair of images.
 ```bash
-$ export EXAMPLES_DIR=/home/hamada14/Video-Enhancement/flownet2-pytorch/examples
-$ export MODEL_PATH=/home/hamada14/Video-Enhancement/flownet2-pytorch/models/FlowNet2-S_checkpoint.pth.tar
-$ python3 flownet2-pytorch/main.py --inference --model FlowNet2S --save_flow \
-    --save examples/ --inference_dataset ImagesFromFolder \
-    --inference_dataset_root $EXAMPLES_DIR --resume $MODEL_PATH --inference_dataset_iext ppm
+$ python3 flow_model_wrapper.py
 ```
 
 ### Visualizing Optical Flow

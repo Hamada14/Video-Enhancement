@@ -1,9 +1,9 @@
 # FlowNet2 Pretrained Models
-flownet2-pytorch/models/*.pth.tar
+flownet2/models/*.pth.tar
 
 
 # FlowNet Examples Directory, Ignore all
-flownet2-pytorch/examples/*
+flownet2/examples/*
 
 
 # Byte-compiled / optimized / DLL files

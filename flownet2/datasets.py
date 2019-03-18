@@ -6,7 +6,7 @@ from os.path import *
 import numpy as np
 
 from glob import glob
-import utils.frame_utils as frame_utils
+from .utils import frame_utils as frame_utils
 
 from scipy.misc import imread, imresize
 
@@ -317,16 +317,31 @@ class ChairsSDHomTest(ChairsSDHom):
     def __init__(self, args, is_cropped = False, root = '', replicates = 1):
         super(ChairsSDHomTest, self).__init__(args, is_cropped = is_cropped, root = root, dstype = 'test', replicates = replicates)
 
+class ImagesLoader(data.Dataset):
+    def __init__(self, img1, img2):
+        self.images = [img1, img2]
+        image_size = self.images[0].shape[:2]
+        render_size = [(image_size[0] // 64) * 64, (image_size[1] // 64) * 64]
+        self.cropper = StaticCenterCrop(image_size, render_size)
+
+
+    def __getitem__(self, index):
+        images = list(map(self.cropper, self.images))
+
+        images = np.array(images).transpose(3,0,1,2)
+        images = torch.from_numpy(images.astype(np.float32))
+        return [images], [torch.zeros(images.size()[0:1] + (2,) + images.size()[-2:])]
+
+    def __len__(self):
+        return 1
+
 class ImagesFromFolder(data.Dataset):
-  def __init__(self, args, is_cropped, root = '/path/to/frames/only/folder', iext = 'png', replicates = 1):
-    self.args = args
-    self.is_cropped = is_cropped
-    self.crop_size = args.crop_size
-    self.render_size = args.inference_size
+  def __init__(self, inference_size, root = '/path/to/frames/only/folder', iext = 'png', replicates = 1):
+    self.is_cropped = False
+    self.render_size = inference_size
     self.replicates = replicates
 
     images = sorted( glob( join(root, '*.' + iext) ) )
-    print("Here : ", images)
     self.image_list = []
     for i in range(len(images)-1):
         im1 = images[i]
@@ -341,7 +356,6 @@ class ImagesFromFolder(data.Dataset):
         self.render_size[0] = ( (self.frame_size[0])//64 ) * 64
         self.render_size[1] = ( (self.frame_size[1])//64 ) * 64
 
-    args.inference_size = self.render_size
 
   def __getitem__(self, index):
     index = index % self.size
@@ -351,15 +365,11 @@ class ImagesFromFolder(data.Dataset):
 
     images = [img1, img2]
     image_size = img1.shape[:2]
-    if self.is_cropped:
-        cropper = StaticRandomCrop(image_size, self.crop_size)
-    else:
-        cropper = StaticCenterCrop(image_size, self.render_size)
+    cropper = StaticCenterCrop(image_size, self.render_size)
     images = list(map(cropper, images))
 
     images = np.array(images).transpose(3,0,1,2)
     images = torch.from_numpy(images.astype(np.float32))
-
     return [images], [torch.zeros(images.size()[0:1] + (2,) + images.size()[-2:])]
 
   def __len__(self):

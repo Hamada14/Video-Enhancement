@@ -16,24 +16,24 @@ from tqdm import tqdm
 from glob import glob
 from os.path import *
 
-import models
-import losses
-import datasets
-from utils import flow_utils, tools
+from . import models
+from . import losses
+from . import datasets
+from .utils import flow_utils, tools
 
-from main_util import train, inference, get_default_argument_parser
+from .main_util import train, inference, get_default_argument_parser
 
 
 # fp32 copy of parameters for update
 global param_copy
 
-if __name__ == '__main__':
+def build_model(model='FlowNet2', check_point=None, loss_func='L1Loss'):
     parser = get_default_argument_parser()
     tools.add_arguments_for_module(
-        parser, models, argument_for_class='model', default='FlowNet2')
+        parser, models, argument_for_class='model', default=model)
 
     tools.add_arguments_for_module(
-        parser, losses, argument_for_class='loss', default='L1Loss')
+        parser, losses, argument_for_class='loss', default=loss_func)
 
     tools.add_arguments_for_module(
         parser, torch.optim, argument_for_class='optimizer', default='Adam', skip_params=['params'])
@@ -53,13 +53,11 @@ if __name__ == '__main__':
                                                        'replicates': 1})
 
     main_dir = os.path.dirname(os.path.realpath(__file__))
-    os.chdir(main_dir)
 
     # Parse the official arguments
     with tools.TimerBlock("Parsing Arguments") as block:
         args = parser.parse_args()
-        if args.number_gpus < 0:
-            args.number_gpus = torch.cuda.device_count()
+        args.number_gpus = torch.cuda.device_count()
 
         # Get argument defaults (hastag #thisisahack)
         parser.add_argument('--IGNORE',  action='store_true')
@@ -76,15 +74,9 @@ if __name__ == '__main__':
             args.optimizer]
         args.loss_class = tools.module_to_dict(losses)[args.loss]
 
-        args.inference_dataset_class = tools.module_to_dict(datasets)[
-            args.inference_dataset]
+        args.inference_dataset_class = tools.module_to_dict(datasets)[args.inference_dataset]
 
-        args.cuda = not args.no_cuda and torch.cuda.is_available()
-        args.current_hash = subprocess.check_output(
-            ["git", "rev-parse", "HEAD"]).rstrip()
-
-        # dict to collect activation gradients (for training debug purpose)
-        args.grads = {}
+        args.cuda = torch.cuda.is_available()
 
         if args.inference:
             args.total_epochs = 1
@@ -92,28 +84,6 @@ if __name__ == '__main__':
 
     # Change the title for `top` and `pkill` commands
     setproctitle.setproctitle(args.save)
-
-    # Dynamically load the dataset class with parameters passed in via "--argument_[param]=[value]" arguments
-    with tools.TimerBlock("Initializing Datasets") as block:
-        args.effective_batch_size = args.batch_size * args.number_gpus
-        args.effective_inference_batch_size = args.inference_batch_size * args.number_gpus
-        args.effective_number_workers = args.number_workers * args.number_gpus
-        gpuargs = {'num_workers': args.effective_number_workers,
-                   'pin_memory': True,
-                   'drop_last': True} if args.cuda else {}
-        inf_gpuargs = gpuargs.copy()
-        inf_gpuargs['num_workers'] = args.number_workers
-
-        if exists(args.inference_dataset_root):
-            inference_dataset = args.inference_dataset_class(
-                args, False, **tools.kwargs_from_args(args, 'inference_dataset'))
-            block.log('Inference Dataset: {}'.format(args.inference_dataset))
-            block.log('Inference Input: {}'.format(
-                ' '.join([str([d for d in x.size()]) for x in inference_dataset[0][0]])))
-            block.log('Inference Targets: {}'.format(
-                ' '.join([str([d for d in x.size()]) for x in inference_dataset[0][1]])))
-            inference_loader = DataLoader(
-                inference_dataset, batch_size=args.effective_inference_batch_size, shuffle=False, **inf_gpuargs)
 
     # Dynamically load model and loss class with parameters passed in via "--model_[param]=[value]" or "--loss_[param]=[value]" arguments
     with tools.TimerBlock("Building {} model".format(args.model)) as block:
@@ -137,7 +107,6 @@ if __name__ == '__main__':
 
         model_and_loss = ModelAndLoss(args)
 
-        block.log('Effective Batch Size: {}'.format(args.effective_batch_size))
         block.log('Number of parameters: {}'.format(sum([p.data.nelement(
         ) if p.requires_grad else 0 for p in model_and_loss.parameters()])))
 
@@ -166,22 +135,18 @@ if __name__ == '__main__':
             torch.manual_seed(args.seed)
 
         # Load weights if needed, otherwise randomly initialize
-        if args.resume and os.path.isfile(args.resume):
-            block.log("Loading checkpoint '{}'".format(args.resume))
-            checkpoint = torch.load(args.resume)
+        if check_point and os.path.isfile(check_point):
+            block.log("Loading checkpoint '{}'".format(check_point))
+            checkpoint = torch.load(check_point)
             if not args.inference:
                 args.start_epoch = checkpoint['epoch']
             best_err = checkpoint['best_EPE']
             model_and_loss.module.model.load_state_dict(
                 checkpoint['state_dict'])
-            block.log("Loaded checkpoint '{}' (at epoch {})".format(
-                args.resume, checkpoint['epoch']))
-
-        elif args.resume and args.inference:
-            block.log("No checkpoint found at '{}'".format(args.resume))
-            quit()
+            block.log("Loaded checkpoint '{}'".format(check_point))
 
         else:
+            block.log("No checkpoint found at '{}'".format(args.resume))
             block.log("Random initialization")
 
         block.log("Initializing save directory: {}".format(args.save))
@@ -200,4 +165,5 @@ if __name__ == '__main__':
         for param, default in list(kwargs.items()):
             block.log("{} = {} ({})".format(param, default, type(default)))
 
-    inference(args=args, data_loader=inference_loader, model=model_and_loss)
+    return model_and_loss
+    # inference(args=args, data_loader=inference_loader, model=model_and_loss)

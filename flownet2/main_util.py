@@ -7,7 +7,7 @@ from tqdm import tqdm
 from torch.autograd import Variable
 from os.path import *
 
-from utils import flow_utils, tools
+from .utils import flow_utils, tools
 
 # Reusable function for training and validataion
 
@@ -123,7 +123,7 @@ def train(args, epoch, start_iteration, data_loader, model, optimizer, logger, i
 
 
 # Reusable function for inference
-def inference(args, data_loader, model, offset=0):
+def inference(args, data_loader, model):
 
     model.eval()
 
@@ -132,14 +132,7 @@ def inference(args, data_loader, model, offset=0):
         if not os.path.exists(flow_folder):
             os.makedirs(flow_folder)
 
-    args.inference_n_batches = np.inf if args.inference_n_batches < 0 else args.inference_n_batches
-
-    progress = tqdm(data_loader, ncols=100, total=np.minimum(len(data_loader), args.inference_n_batches), desc='Inferencing ',
-                    leave=True, position=offset)
-
-    statistics = []
-    total_loss = 0
-    for batch_idx, (data, target) in enumerate(progress):
+    for batch_idx, (data, target) in enumerate(data_loader):
         if args.cuda:
             data, target = [d.cuda(non_blocking=True) for d in data], [
                 t.cuda(non_blocking=True) for t in target]
@@ -151,19 +144,9 @@ def inference(args, data_loader, model, offset=0):
 
         # import IPython; IPython.embed()
         if args.save_flow or args.render_validation:
-            for i in range(args.inference_batch_size):
-                _pflow = output[i].data.cpu().numpy().transpose(1, 2, 0)
-                flow_utils.writeFlow(join(flow_folder, '%06d.flo' % (
-                    batch_idx * args.inference_batch_size + i)),  _pflow)
-
-        progress.update(1)
-
-        if batch_idx == (args.inference_n_batches - 1):
-            break
-
-    progress.close()
-
-    return
+            _pflow = output[0].data.cpu().numpy().transpose(1, 2, 0)
+            flow_utils.writeFlow(join(flow_folder, '%06d.flo' % (
+                batch_idx * args.inference_batch_size + i)),  _pflow)
 
 
 def get_default_argument_parser():
@@ -172,10 +155,6 @@ def get_default_argument_parser():
     parser.add_argument('--total_epochs', type=int, default=10000)
     parser.add_argument('--batch_size', '-b', type=int,
                         default=8, help="Batch size")
-    parser.add_argument('--train_n_batches', type=int, default=-1,
-                        help='Number of min-batches per epoch. If < 0, it will be determined by training_dataloader')
-    parser.add_argument('--crop_size', type=int, nargs='+', default=[
-        256, 256], help="Spatial dimension to crop training samples for training")
     parser.add_argument('--gradient_clip', type=float, default=None)
     parser.add_argument('--schedule_lr_frequency', type=int, default=0,
                         help='in number of iterations (0 for no schedule)')
