@@ -47,6 +47,7 @@ class FlowModelWrapper:
                         )
 
     def inference_dir(self, src_dir, flow_dir, iext='ppm'):
+        self.model.eval()
         if not os.path.exists(flow_dir):
             os.makedirs(flow_dir)
 
@@ -67,8 +68,6 @@ class FlowModelWrapper:
                         leave=True)
 
         for batch_idx, (data, target) in enumerate(progress):
-            print("Current Batch Index:", batch_idx)
-            print(data)
             data, target = [d.cuda(non_blocking=True) for d in data], [
                 t.cuda(non_blocking=True) for t in target]
             data, target = [Variable(d) for d in data], [
@@ -84,6 +83,7 @@ class FlowModelWrapper:
             progress.update(1)
 
     def inference_imgs(self, img1, img2):
+        self.model.eval()
         data_loader = DataLoader(ImagesLoader(img1, img2),batch_size=1)
         progress = tqdm(data_loader, ncols=100, total=len(data_loader), desc='Inferencing ',
                         leave=True)
@@ -94,6 +94,7 @@ class FlowModelWrapper:
 
             with torch.no_grad():
                 losses, output = self.model(data[0], target[0], inference=True)
+            progress.update(1)
             return output[0].data.cpu().numpy().transpose(1, 2, 0)
 
 
@@ -124,4 +125,4 @@ def imgs_example():
     )
     flow_utils.writeFlow(flow_path, flow)
 
-imgs_example()
+dir_example()
