@@ -1,3 +1,5 @@
+import logging
+
 from frvsr.pre_processing.video_reader import VideoReader
 from frvsr.pre_processing.cell_input import CellInput
 import random
@@ -6,6 +8,8 @@ from skimage.transform import resize
 import cv2
 import numpy as np
 import h5py
+
+logger = logging.getLogger()
 
 def down_sample_image(image, factor):
     new_image = np.zeros((int(image.shape[0] / factor), int(image.shape[1] / factor), 3))
@@ -77,11 +81,11 @@ def calculate_batch_flows(lr_batches, flow_net):
     return flow_batches
 
 def tranform_video(source_video_path, dest_video_path, flow_net):
-    print('Transforming video {', source_video_path, '} to dataset {', dest_video_path, '}')
-    print('Creating destination file')
+    logger.debug('Transforming video {' + source_video_path+ '} to dataset {' + dest_video_path+ '}')
+    logger.debug('Creating destination file')
     dataset = h5py.File(dest_video_path, 'w')
-    print('Successfully created the destination file')
-    print('Reading the video file')
+    logger.debug('Successfully created the destination file')
+    logger.debug('Reading the video file')
     reader = VideoReader(source_video_path)
     frames = reader.read_batch(10)
     i = 0
