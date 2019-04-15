@@ -95,7 +95,7 @@ def build_model(model='FlowNet2', check_point=None, loss_func='L1Loss'):
                 kwargs = tools.kwargs_from_args(args, 'loss')
                 self.loss = args.loss_class(args, **kwargs)
 
-            def forward(self, data, target, inference=False):
+            def forward(self, data, target, inference=True):
                 output = self.model(data)
 
                 loss_values = self.loss(output, target)

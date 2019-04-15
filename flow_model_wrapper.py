@@ -79,23 +79,19 @@ class FlowModelWrapper:
             for i in range(len(output)):
                 _pflow = output[i].data.cpu().numpy().transpose(1, 2, 0)
                 flow_utils.writeFlow(join(flow_dir, '%07d.flo' %
-                                          (batch_idx * FlowModelWrapper.BATCH_SIZE + i)),  _pflow)
+                                          (batch_idx * FlowModelWrapper.BATCH_SIZE + i)), _pflow)
             progress.update(1)
+
 
     def inference_imgs(self, img1, img2):
         self.model.eval()
-        data_loader = DataLoader(ImagesLoader(img1, img2),batch_size=1)
-        progress = tqdm(data_loader, ncols=100, total=len(data_loader), desc='Inferencing ',
-                        leave=True)
-        for batch_idx, (data, target) in enumerate(progress):
-            data, target = [d.cuda(non_blocking=True) for d in data],[target[0].cuda(non_blocking=True) for t in target]
-            data, target = [Variable(d) for d in data], [
-                Variable(t) for t in target]
-
-            with torch.no_grad():
-                losses, output = self.model(data[0], target[0], inference=True)
-            progress.update(1)
-            return output[0].data.cpu().numpy().transpose(1, 2, 0)
+        images = np.array([img1, img2]).transpose(3, 0, 1, 2)
+        data = torch.from_numpy(images.astype(np.float32)).unsqueeze(0).cuda()
+        target = torch.zeros(data.size()[0:1] + (2,) + data.size()[-2:])
+        data, target = [Variable(data.cuda(non_blocking=True))], [Variable(target.cuda(non_blocking=True))]
+        with torch.no_grad():
+            losses, result = self.model(data[0], target[0], inference=True)
+        return result[0].data.cpu().numpy().transpose(1, 2, 0)
 
 
 
@@ -117,6 +113,7 @@ def imgs_example():
         frame_utils.read_gen(images_dir[1])
     ]
     flow = s.inference_imgs(images[0], images[1])
+    print(flow)
     flow_path = join(
         os.path.dirname(os.path.realpath(__file__)),
         'flownet2',
@@ -125,4 +122,4 @@ def imgs_example():
     )
     flow_utils.writeFlow(flow_path, flow)
 
-dir_example()
+imgs_example()

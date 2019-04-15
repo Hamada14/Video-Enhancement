@@ -2,7 +2,7 @@
 Portions of this code copyright 2017, Clement Pinard
 '''
 
-# freda (todo) : adversarial loss 
+# freda (todo) : adversarial loss
 
 import torch
 import torch.nn as nn
@@ -15,7 +15,7 @@ class L1(nn.Module):
     def __init__(self):
         super(L1, self).__init__()
     def forward(self, output, target):
-        lossvalue = torch.abs(output - target).mean()
+        lossvalue = 0
         return lossvalue
 
 class L2(nn.Module):
@@ -84,4 +84,3 @@ class MultiScale(nn.Module):
             epevalue += EPE(output, target)
             lossvalue += self.loss(output, target)
             return  [lossvalue, epevalue]
-

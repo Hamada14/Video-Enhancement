@@ -8,6 +8,8 @@ import numpy as np
 import h5py
 from matplotlib import pyplot as plt
 
+
+
 def down_sample_image(image, factor):
     new_image = np.zeros((int(image.shape[0] / factor), int(image.shape[1] / factor), 3))
     row = factor - 1
@@ -69,8 +71,20 @@ def store_to_file(data_tuples, dataset):
     for data_tuple in data_tuples:
         dataset.append(data_tuple)
 
-def tranform_video(source_video_path, dest_video_path):
-    # dataset = h5py.File(dest_video_path, 'w')
+def calculate_flow(low_batch, flow_net):
+    flow_results = []
+    for idx in range(len(low_batch) - 1):
+        flow_results.append(flow_net.inference_imgs(low_batch[idx], low_batch[idx + 1]))
+    return flow_results
+
+def calculate_batch_flows(lr_batches, flow_net):
+    flow_batches = []
+    for lr_batch in lr_batches:
+        flow_batches.append(calculate_flow(low_batch, flow_net))
+    return flow_batches
+
+def tranform_video(source_video_path, dest_video_path, flow_net):
+    dataset = h5py.File(dest_video_path, 'w')
     reader = VideoReader(source_video_path)
     frames = reader.read_batch(10)
     i = 0
@@ -80,11 +94,12 @@ def tranform_video(source_video_path, dest_video_path):
         print(i)
         i += 1
         # call for the optical flow
-        flow_path_batches = []
-        # data_tuples = create_batches_input(new_batches, flow_path_batches)
-        # store_to_file(data_tuples, dataset)
+        flow_path_batches = calculate_batch_flows(lr_batches, flow_net)
+        create_batches_input(hr_batches, flow_path_batches)
+        store_to_file(hr_batches, flow_path_batches)
         frames = reader.read_batch(10)
     return
 
 
-tranform_video('/home/moamen/dataset/AJA CION NAB 2015 Reel-124373479.mov', '')
+
+tranform_video('/home/moamen/dataset/AJA Ki Pro Quad - Efficient 4K workflows.-40439273.mov', '')
