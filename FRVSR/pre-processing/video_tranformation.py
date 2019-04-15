@@ -6,6 +6,10 @@ from skimage.transform import resize
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
+from ../../flow_model_wrapper import FlowModelWrapper
+
+flow_net = FlowModelWrapper.getInstance()
+
 
 def down_sample_image(image, factor):
     new_image = np.zeros((int(image.shape[0] / factor), int(image.shape[1] / factor), 3))
@@ -66,10 +70,17 @@ def tranform_video(source_video_path, dest_video_path):
         down_scaled = down_scale_batch(frames, 2)
         hr_batches, lr_batches = generate_random_batches(down_scaled, 256, 256, 10, 4)
         # call for the optical flow
-        flow_path_batches = []
+        flow_path_batches = calculate_flow(lr_batches)
         # create_batches_input(new_batches, flow_path_batches)
         frames = reader.read_batch(10)
     return
+
+
+def calculate_flow(low_batch):
+    flow_results = []
+    for idx in range(len(low_batch) - 1):
+        flow_results.append(flow_net.inference_imgs(low_batch[idx], low_batch[idx + 1]))
+    return flow_results
 
 
 tranform_video('/home/moamen/dataset/AJA Ki Pro Quad - Efficient 4K workflows.-40439273.mov', '')
