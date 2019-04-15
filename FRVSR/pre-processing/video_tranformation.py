@@ -5,6 +5,7 @@ import random
 from skimage.transform import resize
 import cv2
 import numpy as np
+import h5py
 from matplotlib import pyplot as plt
 
 def down_sample_image(image, factor):
@@ -27,6 +28,7 @@ def generate_random_batches(frames, new_width, new_height, number_of_batches, re
         start_h = random.randint(0, dimensions[1] - new_height)
         lr_batch = []
         hr_batch = []
+        lr_batch.append(np.zeros((int(new_height / reduce_factor), int(new_width / reduce_factor), 3)))
         for frame_idx in range(len(frames)):
             cur_frame = frames[frame_idx]
             cropped_image = cur_frame[start_w : start_w + new_width, start_h : start_h + new_height]
@@ -34,6 +36,10 @@ def generate_random_batches(frames, new_width, new_height, number_of_batches, re
             lr_image = down_sample_image(blurred_image, reduce_factor)
             hr_batch.append(cropped_image)
             lr_batch.append(lr_image)
+            plt.imshow(lr_image)
+            plt.show()
+            plt.imshow(cropped_image)
+            plt.show()
         hr_batches.append(hr_batch)
         lr_batches.append(lr_batch)
     return hr_batches, lr_batches
@@ -59,17 +65,26 @@ def create_batches_input(data_batches, flow_path_batches):
         data_tuples.append(data_tuple)
     return data_tuples
 
+def store_to_file(data_tuples, dataset):
+    for data_tuple in data_tuples:
+        dataset.append(data_tuple)
+
 def tranform_video(source_video_path, dest_video_path):
+    # dataset = h5py.File(dest_video_path, 'w')
     reader = VideoReader(source_video_path)
     frames = reader.read_batch(10)
+    i = 0
     while (len(frames) > 0):
         down_scaled = down_scale_batch(frames, 2)
-        hr_batches, lr_batches = generate_random_batches(down_scaled, 256, 256, 10, 4)
+        hr_batches, lr_batches = generate_random_batches(down_scaled, 256, 256, 1, 4)
+        print(i)
+        i += 1
         # call for the optical flow
         flow_path_batches = []
-        # create_batches_input(new_batches, flow_path_batches)
+        # data_tuples = create_batches_input(new_batches, flow_path_batches)
+        # store_to_file(data_tuples, dataset)
         frames = reader.read_batch(10)
     return
 
 
-tranform_video('/home/moamen/dataset/AJA Ki Pro Quad - Efficient 4K workflows.-40439273.mov', '')
+tranform_video('/home/moamen/dataset/AJA CION NAB 2015 Reel-124373479.mov', '')
