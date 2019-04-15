@@ -1,3 +1,7 @@
+import warnings
+
+warnings.filterwarnings("ignore", category=UserWarning)
+
 import torch
 import torch.nn as nn
 from torch.nn import init

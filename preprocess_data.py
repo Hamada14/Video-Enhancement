@@ -1,5 +1,3 @@
-import sys
-
 from flow_model_wrapper import FlowModelWrapper
 from frvsr.pre_processing.video_transformation import tranform_video
 
