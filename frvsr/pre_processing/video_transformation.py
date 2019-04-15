@@ -1,21 +1,18 @@
-from video_reader import VideoReader
-from cell_input import CellInput
+from frvsr.pre_processing.video_reader import VideoReader
+from frvsr.pre_processing.cell_input import CellInput
 import random
 
 from skimage.transform import resize
 import cv2
 import numpy as np
 import h5py
-from matplotlib import pyplot as plt
-
-
 
 def down_sample_image(image, factor):
     new_image = np.zeros((int(image.shape[0] / factor), int(image.shape[1] / factor), 3))
     row = factor - 1
-    while (row < image.shape[0]):
+    while row < image.shape[0]:
         col = factor - 1
-        while (col < image.shape[1]):
+        while col < image.shape[1]:
             new_image[int(row / factor), int(col / factor), :] = image[row, col, :]
             col += factor
         row += factor
@@ -38,10 +35,6 @@ def generate_random_batches(frames, new_width, new_height, number_of_batches, re
             lr_image = down_sample_image(blurred_image, reduce_factor)
             hr_batch.append(cropped_image)
             lr_batch.append(lr_image)
-            plt.imshow(lr_image)
-            plt.show()
-            plt.imshow(cropped_image)
-            plt.show()
         hr_batches.append(hr_batch)
         lr_batches.append(lr_batch)
     return hr_batches, lr_batches
@@ -84,13 +77,17 @@ def calculate_batch_flows(lr_batches, flow_net):
     return flow_batches
 
 def tranform_video(source_video_path, dest_video_path, flow_net):
+    print('Transforming video {', source_video_path, '} to dataset {', dest_video_path, '}')
+    print('Creating destination file')
     dataset = h5py.File(dest_video_path, 'w')
+    print('Successfully created the destination file')
+    print('Reading the video file')
     reader = VideoReader(source_video_path)
     frames = reader.read_batch(10)
     i = 0
     while (len(frames) > 0):
         down_scaled = down_scale_batch(frames, 2)
-        hr_batches, lr_batches = generate_random_batches(down_scaled, 256, 256, 1, 4)
+        hr_batches, lr_batches = generate_random_batches(down_scaled, 256, 256, 10, 4)
         print(i)
         i += 1
         # call for the optical flow
