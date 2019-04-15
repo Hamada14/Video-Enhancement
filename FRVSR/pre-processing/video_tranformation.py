@@ -1,20 +1,42 @@
 from video_reader import VideoReader
 from cell_input import CellInput
 import random
-from skimage.transform import resize
 
-def generate_random_batches(frames, new_width, new_height, number_of_batches):
-    new_batches = []
+from skimage.transform import resize
+import cv2
+import numpy as np
+from matplotlib import pyplot as plt
+
+def down_sample_image(image, factor):
+    new_image = np.zeros((int(image.shape[0] / factor), int(image.shape[1] / factor), 3))
+    row = factor - 1
+    while (row < image.shape[0]):
+        col = factor - 1
+        while (col < image.shape[1]):
+            new_image[int(row / factor), int(col / factor), :] = image[row, col, :]
+            col += factor
+        row += factor
+    return new_image
+
+def generate_random_batches(frames, new_width, new_height, number_of_batches, reduce_factor):
+    hr_batches = []
+    lr_batches = []
     for batch_idx in range(number_of_batches):
         dimensions = frames[0].shape
         start_w = random.randint(0, dimensions[0] - new_width)
         start_h = random.randint(0, dimensions[1] - new_height)
-        new_batch = []
+        lr_batch = []
+        hr_batch = []
         for frame_idx in range(len(frames)):
             cur_frame = frames[frame_idx]
-            new_batch.append(cur_frame[start_w : start_w + new_width, start_h : start_h + new_height])
-        new_batches.append(new_batch)
-    return new_batches
+            cropped_image = cur_frame[start_w : start_w + new_width, start_h : start_h + new_height]
+            blurred_image = cv2.GaussianBlur(cropped_image, (0, 0), 1.5, 1.5, 0)
+            lr_image = down_sample_image(blurred_image, reduce_factor)
+            hr_batch.append(cropped_image)
+            lr_batch.append(lr_image)
+        hr_batches.append(hr_batch)
+        lr_batches.append(lr_batch)
+    return hr_batches, lr_batches
 
 def down_scale_batch(frames, factor):
     down_scaled = []
@@ -40,10 +62,9 @@ def create_batches_input(data_batches, flow_path_batches):
 def tranform_video(source_video_path, dest_video_path):
     reader = VideoReader(source_video_path)
     frames = reader.read_batch(10)
-
     while (len(frames) > 0):
         down_scaled = down_scale_batch(frames, 2)
-        new_batches = generate_random_batches(down_scaled, 256, 256, 1)
+        hr_batches, lr_batches = generate_random_batches(down_scaled, 256, 256, 10, 4)
         # call for the optical flow
         flow_path_batches = []
         # create_batches_input(new_batches, flow_path_batches)
