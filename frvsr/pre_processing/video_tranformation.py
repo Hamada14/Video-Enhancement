@@ -80,7 +80,7 @@ def calculate_flow(low_batch, flow_net):
 def calculate_batch_flows(lr_batches, flow_net):
     flow_batches = []
     for lr_batch in lr_batches:
-        flow_batches.append(calculate_flow(low_batch, flow_net))
+        flow_batches.append(calculate_flow(lr_batch, flow_net))
     return flow_batches
 
 def tranform_video(source_video_path, dest_video_path, flow_net):
@@ -99,7 +99,3 @@ def tranform_video(source_video_path, dest_video_path, flow_net):
         store_to_file(hr_batches, flow_path_batches)
         frames = reader.read_batch(10)
     return
-
-
-
-tranform_video('/home/moamen/dataset/AJA Ki Pro Quad - Efficient 4K workflows.-40439273.mov', '')
