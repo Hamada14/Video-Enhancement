@@ -30,7 +30,7 @@
 
  4. Install the necessary libraries using pip:
   ```bash
-  $ pip3 install tensorboardX setproctitle colorama tqdm scipy pytz cvbase opencv-python
+  $ pip3 install tensorboardX setproctitle colorama tqdm scipy pytz cvbase opencv-python scikit-image h5py matplotlib numpy
   ```
 
 ### Demo
