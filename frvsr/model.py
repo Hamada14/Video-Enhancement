@@ -58,4 +58,10 @@ class FRVSR():
             states = tf.scan(step, tf.transpose(batch_input, [1, 0, 2, 3, 4]), initializer=np.zeros((batch_size, height, width, channels)))
 
             # batch_size * frames_len * hr_h * hr_w * channels
-            output =
+            output = tf.transpose(states, [1, 0, 2, 3, 4])
+
+            train_op = tf.train.AdagradOptimizer(learning_rate=1e-4).minimize(loss)
+
+            self.predict = predict
+
+            self.loss =
