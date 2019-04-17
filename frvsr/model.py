@@ -6,7 +6,7 @@ FLOW_INDEX = 1
 
 class FRVSR():
 
-    def __init__(self, batch_size, frames_len, height, width, channels, flow_depth):
+    def __init__(self, batch_size, frames_len, height, width, channels, flow_depth, check_point_path):
 
         lr_frame_input = tf.placeholder(dtype=tf.int32)
         flow_input = tf.placeholder(dtype=tf.float32)
@@ -60,8 +60,36 @@ class FRVSR():
             # batch_size * frames_len * hr_h * hr_w * channels
             output = tf.transpose(states, [1, 0, 2, 3, 4])
 
-            train_op = tf.train.AdagradOptimizer(learning_rate=1e-4).minimize(loss)
-
+            losses = tf.map_fn(tf.nn.l2_loss, tf.to_float(hr_frame_input - output))
+            self.loss = tf.reduce_mean(losses)
+            self.train_op = tf.train.AdagradOptimizer(learning_rate=1e-4).minimize(loss)
             self.predict = predict
+            self.check_point_path = check_point_path
 
-            self.loss =
+    ####
+    # training
+    def train(self, epochs=100):
+        # training session
+        with tf.Session() as sess:
+            sess.run(tf.global_variables_initializer())
+            train_loss = 0
+            try:
+                for i in range(epochs):
+                    for j in range(100):
+                        lr_frame_input, hr_frame_input, flow_input = train_set.__next__()
+                        batch_size = xs.shape[0]
+                        _, train_loss_ = sess.run([self.train_op, self.loss], feed_dict = {
+                                self.xs_ : xs,
+                                self.ys_ : ys.flatten(),
+                                self.init_state : np.zeros([2, batch_size, self.state_size])
+                            })
+                        train_loss += train_loss_
+                    print('[{}] loss : {}'.format(i,train_loss/100))
+                    train_loss = 0
+            except KeyboardInterrupt:
+                print('interrupted by user at ' + str(i))
+            #
+            # training ends here;
+            #  save checkpoint
+            saver = tf.train.Saver()
+            saver.save(sess, self.ckpt_path + self.model_name, global_step=i)
