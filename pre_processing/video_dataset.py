@@ -1,7 +1,6 @@
 import logging
 
-from frvsr.pre_processing.video_reader import VideoReader
-from frvsr.pre_processing.cell_input import CellInput
+from pre_processing.video_reader import VideoReader
 import random
 
 from skimage.transform import resize
@@ -94,12 +93,14 @@ class VideoDataSet():
 
 
 def get_files_in_dir(directory):
-    return [f for f in glob.glob(directory + "*")]
+    files = [f for f in glob.glob(directory + "/*")]
+    np.random.shuffle(files)
+    return files
 
 
 def down_scale_batch(frames, factor):
     down_scaled = []
-    for frame_idx in enumerate(frames):
+    for frame_idx in range(len(frames)):
         dimensions = frames[frame_idx].shape
         (width, height) = dimensions[0] / factor, dimensions[1] / factor
         down_scaled.append(resize(frames[frame_idx], (width, height)))
@@ -115,7 +116,7 @@ def calculate_batch_flows(lr_batches, flow_net):
 
 def calculate_flow(low_batch, flow_net):
     flow_results = []
-    for idx in enumerate(low_batch):
+    for idx in range(len(low_batch)):
         if idx == 0:
             low_1 = np.zeros((LOW_WIDTH, LOW_HEIGHT, IMAGE_DEPTH))
         else:
