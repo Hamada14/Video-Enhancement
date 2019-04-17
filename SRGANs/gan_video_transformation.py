@@ -3,7 +3,7 @@ import logging
 from frvsr.pre_processing.video_reader import VideoReader
 from frvsr.pre_processing.cell_input import CellInput
 import random
-
+import tensorflow as tf
 from skimage.transform import resize
 import cv2
 import numpy as np
@@ -11,20 +11,20 @@ import h5py
 
 import cvbase as cvb
 
-HIGH_WIDTH = 256
-HIGH_HEIGHT = 256
+HIGH_WIDTH = 128
+HIGH_HEIGHT = 128
 
-LOW_WIDTH = 64
-LOW_HEIGHT = 64
+LOW_WIDTH = 32
+LOW_HEIGHT = 32
 
-FLOW_WIDTH = 64
-FLOW_HEIGHT = 64
+FLOW_WIDTH = 32
+FLOW_HEIGHT = 32
 
 IMAGE_DEPTH = 3
 FLOW_DEPTH = 3
 
 TEMPORAL_STEPS = 10
-BATCH_SIZE = 10
+BATCH_SIZE = 8
 
 GAUSSIAN_X_STD = 1.5
 GAUSSIAN_Y_STD = 1.5
@@ -85,7 +85,10 @@ def calculate_flow(low_batch, flow_net):
         else:
             low_1 = low_batch[idx - 1]
         low_2 = low_batch[idx]
-        flow_results.append(flow_net.inference_imgs(low_1, low_2))
+        flow = flow_net.inference_imgs(low_1, low_2)
+        new_size = tf.convert_to_tensor([HIGH_WIDTH, HIGH_HEIGHT])
+        resized_flow = tf.image.resize_bilinear(flow, new_size)
+        flow_results.append(resized_flow)
     return flow_results
 
 def calculate_batch_flows(lr_batches, flow_net):
@@ -94,29 +97,3 @@ def calculate_batch_flows(lr_batches, flow_net):
         flow_batches.append(calculate_flow(lr_batch, flow_net))
     return flow_batches
 
-def tranform_video(source_video_path, flow_net):
-    logger.info('Transforming video {' + source_video_path+ '}')
-    logger.info('Successfully created the destination file')
-    logger.info('Reading the video file')
-    reader = VideoReader(source_video_path)
-    frames = reader.read_batch(10)
-    i = 0
-    while (len(frames) >= 10):
-        logger.info('[batch: ' + str(i + 1) + '] ' + 'Read the input batch successfully')
-        down_scaled = down_scale_batch(frames, 2)
-        logger.info('[batch: ' + str(i + 1) + '] ' + 'Downscaled the frames successfully')
-        hr_batches, lr_batches = generate_random_batches(down_scaled, HIGH_WIDTH, HIGH_HEIGHT, BATCH_SIZE, HIGH_WIDTH // LOW_WIDTH)
-        logger.info('[batch: ' + str(i + 1) + '] ' + 'Generated random batches from downscaled frames')
-        logger.info('[batch: ' + str(i + 1) + '] ' + 'Initializing flow calculation')
-        flow_path_batches = calculate_batch_flows(lr_batches, flow_net)
-        logger.info('[batch: ' + str(i + 1) + '] ' + 'Finished calculating the flow for the current batch')
-
-        # train the SR model
-        logger.info('[batch: ' + str(i + 1) + '] ' + 'Appended the batch to the dataset file')
-        frames = reader.read_batch(10)
-        i += 1
-
-#     high: nx10x10x256x256x3
-#     low: nx10x10x64x64x3
-#     flow: nx10x10x64x64x2
-#     number x random x seq of ten x image_dim
