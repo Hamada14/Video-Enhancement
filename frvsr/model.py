@@ -26,20 +26,20 @@ class FRVSR():
                 # concatenate the lr_frame with the depth warped frame
                 model_input = tf.concat([lr_frame, depth])
                 # Implementing the model
-                pre_conv = tf.layers.conv2d(inputs=model_input, filters=64, kernel_size=[3, 3], padding="same", strides=1, name="pre_conv")
+                pre_conv = tf.layers.conv2d(inputs=model_input, filters=64, kernel_size=[3, 3], padding="same", strides=1, name="pre_conv", kernel_initializer=tf.contrib.layers.xavier_initializer())
                 pre_relu = tf.nn.relu(pre_conv, name="pre_relu")
                 pre = pre_relu
                 for conv_layer in range(10):
-                    conv1 = tf.layers.conv2d(inputs=pre, filters=64, kernel_size=[3, 3], padding="same", strides=1, name="conv_1_" + str(conv_layer))
+                    conv1 = tf.layers.conv2d(inputs=pre, filters=64, kernel_size=[3, 3], padding="same", strides=1, name="conv_1_" + str(conv_layer), kernel_initializer=tf.contrib.layers.xavier_initializer())
                     relu = tf.nn.relu(conv1, name="relu_" + str(conv_layer))
-                    conv2 = tf.layers.conv2d(inputs=relu, filters=64, kernel_size=[3, 3], padding="same", strides=1, name="conv_2_" + str(conv_layer))
+                    conv2 = tf.layers.conv2d(inputs=relu, filters=64, kernel_size=[3, 3], padding="same", strides=1, name="conv_2_" + str(conv_layer), kernel_initializer=tf.contrib.layers.xavier_initializer())
                     pre = conv2
 
-                transpose_1 = tf.nn.conv2d_transpose(pre, [3, 3], strides=2, padding='same', name="transpose_1")
+                transpose_1 = tf.nn.conv2d_transpose(pre, [3, 3], strides=2, padding='same', name="transpose_1", kernel_initializer=tf.contrib.layers.xavier_initializer())
                 relu_1 = tf.nn.relu(transpose_1, name="relu_1")
-                transpose_2 = tf.nn.conv2d_transpose(relu_1, [3, 3], strides=2, padding='same', name="transpose_2")
+                transpose_2 = tf.nn.conv2d_transpose(relu_1, [3, 3], strides=2, padding='same', name="transpose_2", kernel_initializer=tf.contrib.layers.xavier_initializer())
                 relu_2 = tf.nn.relu(transpose_2, name="relu_2")
-                estimate = tf.layers.conv2d(inputs=relu, filters=3, kernel_size=[3, 3], padding="same", strides=1, name="estimate")
+                estimate = tf.layers.conv2d(inputs=relu, filters=3, kernel_size=[3, 3], padding="same", strides=1, name="estimate", kernel_initializer=tf.contrib.layers.xavier_initializer())
                 return estimate
 
         reshaped_lr = tf.reshape(lr_frame_input, [batch_size, frames_len, 1, height, width, channels])
@@ -66,18 +66,21 @@ class FRVSR():
 
     ####
     # training
-    def train(self, data_set, epochs=100):
+    def train(self, data_set, epochs=2000):
         # training session
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
             check_point = tf.train.get_checkpoint_state(self.check_point_path)
-            saver = tf.train.Saver()
+            saver = tf.train.Saver(max_to_keep=4, keep_checkpoint_every_n_hours=1)
             if check_point and check_point.model_checkpoint_path:
                 saver.restore(sess, check_point.model_checkpoint_path)
             train_loss = 0
+            current_iteration = 0
             try:
                 for i in range(epochs):
-                    for j in range(100):
+                    current_iteration = i
+                    steps = 100
+                    for j in range(steps):
                         lr_frame_input, hr_frame_input, flow_input = data_set.next_data()
                         _, train_loss_ = sess.run([self.train_op, self.loss], feed_dict={
                             self.lr_frame_input:lr_frame_input,
@@ -85,12 +88,12 @@ class FRVSR():
                             self.flow_input:flow_input
                         })
                         train_loss += train_loss_
-                    print '[{}] loss : {}'.format(i, train_loss/100)
+                    print '[{}] loss : {}'.format(i, train_loss/steps)
+                    saver.save(sess, self.check_point_path, global_step=current_iteration)
                     train_loss = 0
             except KeyboardInterrupt:
                 print 'interrupted by user at ' + str(i)
-            #
-            # training ends here;
-            #  save checkpoint
-            saver = tf.train.Saver()
-            saver.save(sess, self.check_point_path, global_step=i)
+                #
+                # training ends here;
+                #  save checkpoint
+                saver.save(sess, self.check_point_path, global_step=current_iteration + 1 + epochs)
