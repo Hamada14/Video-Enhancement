@@ -24,7 +24,6 @@ IMAGE_DEPTH = 3
 FLOW_DEPTH = 3
 
 TEMPORAL_STEPS = 10
-BATCH_SIZE = 10
 
 GAUSSIAN_X_STD = 1.5
 GAUSSIAN_Y_STD = 1.5
@@ -49,7 +48,7 @@ class VideoDataSet():
             self.current_down_scaled,
             HIGH_WIDTH,
             HIGH_HEIGHT,
-            BATCH_SIZE,
+            self.batch_size,
             HIGH_WIDTH // LOW_WIDTH
         )
         flow_batches = calculate_batch_flows(lr_batches, self.flow_net)
@@ -79,7 +78,7 @@ class VideoDataSet():
             start_h = random.randint(0, dimensions[1] - new_height)
             lr_batch = []
             hr_batch = []
-            for frame_idx in enumerate(frames):
+            for frame_idx in range(len(frames)):
                 cur_frame = frames[frame_idx]
                 cropped_image = cur_frame[start_w : start_w + new_width, start_h : start_h + new_height]
                 blurred_image = cv2.GaussianBlur(cropped_image, (0, 0), GAUSSIAN_X_STD, GAUSSIAN_Y_STD, 0)

@@ -19,7 +19,7 @@ CHECK_POINT_PATH = '/home/moamen/gp/Video-Enhancement/check_point/frvsr'
 
 video_dataset = VideoDataSet(
     FlowModelWrapper.getInstance(),
-    '/home/moamen/gp/Video-Enhancement/dataset',
+    '/home/hamada/dataset/backup',
     BATCH_SIZE,
     FRAMES_LEN,
     FRAME_TRY
