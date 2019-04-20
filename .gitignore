@@ -1,4 +1,10 @@
-# FlowNet2 Pretrained Models
+# Jet Brains IDE
+.idea
+
+# check points
+check_point/frvsr/
+
+#FlowNet2 Pretrained Models
 flownet2/models/*.pth.tar
 
 
