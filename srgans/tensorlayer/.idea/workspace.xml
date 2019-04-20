@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="febf6d5d-2cfd-4c55-a71f-829e4d588adb" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../../recurrent_srgan_trainer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/config.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/gan_video_transformation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/recurrent_srgan_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/srgan_cell_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/_logging.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/activation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/cli/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/cli/__main__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/cli/train.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/cost.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/db.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/distributed.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/files.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/iterate.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/layers.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/layers/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/layers/convolution.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/layers/core.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/layers/extend.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/layers/flow_control.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/layers/importer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/layers/merge.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/layers/normalization.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/layers/object_detection.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/layers/padding.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/layers/pooling.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/layers/recurrent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/layers/shape.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/layers/spatial_transformer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/layers/special_activation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/layers/stack.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/layers/super_resolution.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/layers/time_distribution.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/nlp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/ops.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/prepro.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/rein.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/third_party/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/third_party/roi_pooling/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/third_party/roi_pooling/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/third_party/roi_pooling/examples/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/third_party/roi_pooling/examples/roi_pooling_minimal_example.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/third_party/roi_pooling/roi_pooling/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/third_party/roi_pooling/roi_pooling/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/third_party/roi_pooling/roi_pooling/roi_pooling.cc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/third_party/roi_pooling/roi_pooling/roi_pooling.cu.cc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/third_party/roi_pooling/roi_pooling/roi_pooling_ops.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/third_party/roi_pooling/roi_pooling/roi_pooling_test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/third_party/roi_pooling/roi_pooling_animation.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/third_party/roi_pooling/roi_pooling_example.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/third_party/roi_pooling/setup.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/third_party/roi_pooling/test_roi_layer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/tensorlayer/visualize.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../SRGANs/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../flow_model_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../flow_model_wrapper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../flownet2/examples/flow_visualization.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../flownet2/networks/correlation_package/correlation_cuda.cc" beforeDir="false" afterPath="$PROJECT_DIR$/../../flownet2/networks/correlation_package/correlation_cuda.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../frvsr_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../frvsr_trainer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../pre_processing/video_dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../pre_processing/video_dataset.py" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FUSProjectUsageTrigger">
+    <session id="550100856">
+      <usages-collector id="statistics.lifecycle.project">
+        <counts>
+          <entry key="project.closed" value="1" />
+          <entry key="project.open.time.1" value="1" />
+          <entry key="project.opened" value="1" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.extensions.open">
+        <counts>
+          <entry key="py" value="2" />
+        </counts>
+      </usages-collector>
+      <usages-collector id="statistics.file.types.open">
+        <counts>
+          <entry key="Python" value="2" />
+        </counts>
+      </usages-collector>
+    </session>
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/layers/pooling.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="399">
+              <caret line="47" column="19" selection-start-line="47" selection-start-column="13" selection-end-line="47" selection-end-column="19" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/layers.py">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>InputLayer</find>
+    </findStrings>
+    <dirStrings>
+      <dir>$PROJECT_DIR$/</dir>
+    </dirStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="428" />
+    <option name="y" value="80" />
+    <option name="width" value="1400" />
+    <option name="height" value="1000" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="tensorlayer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tensorlayer" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tensorlayer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tensorlayer" type="462c0819:PsiDirectoryNode" />
+              <item name="cli" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tensorlayer" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tensorlayer" type="462c0819:PsiDirectoryNode" />
+              <item name="layers" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../srgan-1.2.0" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="febf6d5d-2cfd-4c55-a71f-829e4d588adb" name="Default Changelist" comment="" />
+      <created>1555794059446</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1555794059446</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="67" y="25" width="1853" height="1055" extended-state="6" />
+    <layout>
+      <window_info id="Favorites" side_tool="true" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24972677" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Python Console" />
+      <window_info anchor="bottom" id="Terminal" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/layers/pooling.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="399">
+          <caret line="47" column="19" selection-start-line="47" selection-start-column="13" selection-end-line="47" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/layers.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+  </component>
+</project>

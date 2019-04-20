@@ -59,7 +59,7 @@ def train():
     ## train inference
     t_image = tf.placeholder('float32', [batch_size, 96, 96, 3], name='t_image_input_to_SRGAN_generator')
     t_target_image = tf.placeholder('float32', [batch_size, 384, 384, 3], name='t_target_image')
-    t_wrapped_image = tf.placeholder('float32', [batch_size, 384, 384, 3], name='t_target_image')
+
 
     net_g = SRGAN_g(t_image, is_train=True, reuse=False)
     net_d, logits_real = SRGAN_d(t_target_image, is_train=True, reuse=False)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
-
+import logging
 import numpy as np
 import tensorflow as tf
 
@@ -1310,3 +1310,4 @@ class DropconnectDenseLayer(Layer):
         self.all_drop.update({set_keep[name]: keep})
         self.all_layers.extend([self.outputs])
         self.all_params.extend([W, b])
+

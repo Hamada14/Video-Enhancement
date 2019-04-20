@@ -1,9 +1,9 @@
 #! /usr/bin/python
 # -*- coding: utf8 -*-
-
+import logging
 import tensorflow as tf
-import SRGANs.tensorlayer as tl
-from SRGANs.tensorlayer.layers import *
+import tensorlayer as tl
+from srgans.tensorlayer.layers import *
 
 # from tensorflow.python.ops import variable_scope as vs
 # from tensorflow.python.ops import math_ops, init_ops, array_ops, nn
@@ -17,9 +17,9 @@ def SRGAN_generator(raw_frame, wrapped_frame,  reuse=False):
     w_init = tf.random_normal_initializer(stddev=0.02)
     b_init = None  # tf.constant_initializer(value=0.0)
     with tf.variable_scope("SRGAN_g", reuse=reuse) as vs:
-        tl.layers.set_name_reuse(reuse)
+        set_name_reuse(reuse)
         wrapped_frame = tf.space_to_depth(wrapped_frame, 4)
-        input = tf.concat([raw_frame, wrapped_frame], 2)
+        input = tf.concat([raw_frame, wrapped_frame], 3)
         n = InputLayer(input, name='in')
         n = Conv2d(n, 64, (3, 3), (1, 1), act=tf.nn.relu, padding='SAME', W_init=w_init, name='n64s1/c')
 
@@ -32,12 +32,16 @@ def SRGAN_generator(raw_frame, wrapped_frame,  reuse=False):
 
         # Upscaling
         for i in range(2):
-            n = Conv2d(n, 64, (3, 3), (1, 1), act=None, padding='SAME', W_init=w_init, b_init=b_init, name='n64s1/c1/%s' % i)
-            n = tf.nn.depth_to_space(n, 2)
-            n = tf.nn.relu(n)
+            nn = Conv2d(n, 256, (3, 3), (1, 1), act=None, padding='SAME', W_init=w_init, b_init=b_init, name='n256s1/c3/%s' % i)
+            #n_outputs = n.outputs
+            nn = tf.nn.depth_to_space(nn.outputs, 2)
+            nn = tf.nn.relu(nn)
+            n = InputLayer(nn, name = 'after_depth_space/%s' % i)
+        n = Conv2d(n, 3, (3, 3), (1, 1), act=None, padding='SAME',   W_init=w_init, b_init=b_init, name='n3s1/c4')
 
         temp = tf.image.resize_bicubic(raw_frame,[128,128])
-        n = ElementwiseLayer([n, temp], tf.add, 'b_residual_add/%s' % i)
+        temp = InputLayer(temp, name = 'raw_frame_After_bicubic')
+        n = ElementwiseLayer([n, temp], tf.add, 'b_residual_add')
     return n, n.outputs
 
 
@@ -48,7 +52,7 @@ def SRGAN_discriminator(input_frames, is_train=True, reuse=False):
     df_dim = 64
     lrelu = lambda x: tl.act.lrelu(x, 0.2)
     with tf.variable_scope("SRGAN_d", reuse=reuse):
-        tl.layers.set_name_reuse(reuse)
+        set_name_reuse(reuse)
         net_in = InputLayer(input_frames, name='input/frames')
         net_h0 = Conv2d(net_in, df_dim, (4, 4), (2, 2), act=lrelu, padding='SAME', W_init=w_init, name='h0/c')
 

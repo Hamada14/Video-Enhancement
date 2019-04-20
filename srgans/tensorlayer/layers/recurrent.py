@@ -305,7 +305,7 @@ class BiRNNLayer(Layer):
 
     References
     ----------
-    `Source <https://github.com/akaraspt/deepsleep/blob/master/deepsleep/model.py>`__
+    `Source <https://github.com/akaraspt/deepsleep/blob/master/deepsleep/srgan_cell_model.py>`__
 
     """
 

@@ -15,11 +15,11 @@ LR_HEIGHT = 64
 LR_WIDTH = 64
 IMAGE_CHANNELS = 3
 FLOW_DEPTH = 2
-CHECK_POINT_PATH = '/home/moamen/gp/Video-Enhancement/check_point/frvsr'
+CHECK_POINT_PATH = '/home/karfass/Documents/graduation/Video-Enhancement/check_point/frvsr'
 
 video_dataset = VideoDataSet(
     FlowModelWrapper.getInstance(),
-    '/home/hamada/dataset/backup',
+    '/home/karfass/Documents/graduation/Video-Enhancement/dataset',
     BATCH_SIZE,
     FRAMES_LEN,
     FRAME_TRY

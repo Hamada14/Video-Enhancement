@@ -11,14 +11,14 @@ import glob
 
 import cvbase as cvb
 
-HIGH_WIDTH = 256
-HIGH_HEIGHT = 256
+HIGH_WIDTH = 128
+HIGH_HEIGHT = 128
 
-LOW_WIDTH = 64
-LOW_HEIGHT = 64
+LOW_WIDTH = 32
+LOW_HEIGHT = 32
 
-FLOW_WIDTH = 64
-FLOW_HEIGHT = 64
+FLOW_WIDTH = 32
+FLOW_HEIGHT = 32
 
 IMAGE_DEPTH = 3
 FLOW_DEPTH = 3
@@ -94,6 +94,8 @@ class VideoDataSet():
 def get_files_in_dir(directory):
     files = [f for f in glob.glob(directory + "/*")]
     np.random.shuffle(files)
+    print(directory)
+    print(files)
     return files
 
 

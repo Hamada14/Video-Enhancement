@@ -2,11 +2,70 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="729dcf01-1f98-40d1-bcec-c6f253c087d6" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SRGANs/gan_video_transformation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SRGANs/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/SRGANs/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frvsr/pre_processing/video_transformation.py" beforeDir="false" afterPath="$PROJECT_DIR$/frvsr/pre_processing/video_transformation.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/recurrent_srgan_trainer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/config.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/gan_video_transformation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/recurrent_srgan_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/srgan_cell_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/_logging.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/activation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/cli/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/cli/__main__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/cli/train.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/cost.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/db.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/distributed.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/files.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/iterate.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/layers.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/layers/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/layers/convolution.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/layers/core.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/layers/extend.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/layers/flow_control.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/layers/importer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/layers/merge.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/layers/normalization.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/layers/object_detection.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/layers/padding.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/layers/pooling.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/layers/recurrent.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/layers/shape.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/layers/spatial_transformer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/layers/special_activation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/layers/stack.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/layers/super_resolution.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/layers/time_distribution.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/nlp.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/ops.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/prepro.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/rein.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/third_party/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/third_party/roi_pooling/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/third_party/roi_pooling/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/third_party/roi_pooling/examples/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/third_party/roi_pooling/examples/roi_pooling_minimal_example.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/third_party/roi_pooling/roi_pooling/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/third_party/roi_pooling/roi_pooling/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/third_party/roi_pooling/roi_pooling/roi_pooling.cc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/third_party/roi_pooling/roi_pooling/roi_pooling.cu.cc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/third_party/roi_pooling/roi_pooling/roi_pooling_ops.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/third_party/roi_pooling/roi_pooling/roi_pooling_test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/third_party/roi_pooling/roi_pooling_animation.gif" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/third_party/roi_pooling/roi_pooling_example.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/third_party/roi_pooling/setup.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/third_party/roi_pooling/test_roi_layer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/tensorlayer/visualize.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SRGANs/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flow_model_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/flow_model_wrapper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flownet2/examples/flow_visualization.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flownet2/networks/correlation_package/correlation_cuda.cc" beforeDir="false" afterPath="$PROJECT_DIR$/flownet2/networks/correlation_package/correlation_cuda.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frvsr_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/frvsr_trainer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pre_processing/video_dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/pre_processing/video_dataset.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,30 +77,35 @@
     <session id="1743299112">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="1" />
+          <entry key="project.closed" value="8" />
+          <entry key="project.open.time.0" value="2" />
           <entry key="project.open.time.1" value="1" />
+          <entry key="project.open.time.23" value="2" />
+          <entry key="project.open.time.24" value="3" />
           <entry key="project.open.time.34" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.opened" value="9" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="10" />
+          <entry key="py" value="24" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="10" />
+          <entry key="Python" value="24" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="646" />
+          <entry key="dummy" value="48" />
+          <entry key="py" value="2471" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="646" />
+          <entry key="PLAIN_TEXT" value="48" />
+          <entry key="Python" value="2471" />
         </counts>
       </usages-collector>
     </session>
@@ -49,10 +113,54 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/frvsr/pre_processing/video_transformation.py">
+        <entry file="file://$PROJECT_DIR$/frvsr/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="82" column="20" selection-start-line="82" selection-start-column="20" selection-end-line="85" selection-end-column="38" />
+            <state relative-caret-position="1482">
+              <caret line="79" column="34" selection-start-line="79" selection-start-column="34" selection-end-line="79" selection-end-column="34" />
+              <folding>
+                <element signature="e#0#23#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/recurrent_srgan_trainer.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="190">
+              <caret line="16" selection-start-line="16" selection-end-line="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/pre_processing/recurrent_srgan_model.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="832">
+              <caret line="214" selection-start-line="15" selection-end-line="214" />
+              <folding>
+                <element signature="e#0#37#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pre_processing/config.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <folding>
+                <element signature="e#0#38#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/frvsr_trainer.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="380">
+              <caret line="25" column="1" selection-start-line="25" selection-start-column="1" selection-end-line="25" selection-end-column="1" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -61,19 +169,7 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/SRGANs/gan_video_transformation.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="547">
-              <caret line="87" column="52" selection-start-line="87" selection-start-column="52" selection-end-line="87" selection-end-column="52" />
-              <folding>
-                <element signature="e#0#14#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/preprocess_data.py">
+        <entry file="file://$PROJECT_DIR$/pre_processing/video_reader.py">
           <provider selected="true" editor-type-id="text-editor">
             <state>
               <folding>
@@ -84,42 +180,12 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/SRGANs/config.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="152">
-              <caret line="8" column="19" selection-start-line="8" selection-end-line="9" />
-              <folding>
-                <element signature="e#0#38#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/SRGANs/new_main.py">
+        <entry file="file://$PROJECT_DIR$/pre_processing/video_dataset.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="171">
-              <caret line="9" column="12" selection-start-line="9" selection-start-column="7" selection-end-line="9" selection-end-column="12" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/SRGANs/main.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="528">
-              <caret line="286" column="24" selection-start-line="286" selection-start-column="19" selection-end-line="286" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/SRGANs/model.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="361">
-              <caret line="19" column="39" lean-forward="true" selection-start-line="19" selection-start-column="39" selection-end-line="19" selection-end-column="39" />
+              <caret line="20" column="16" selection-start-line="20" selection-start-column="16" selection-end-line="20" selection-end-column="16" />
               <folding>
-                <element signature="e#43#66#0" expanded="true" />
+                <element signature="e#0#14#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -137,7 +203,17 @@
       <find>decay_every</find>
       <find>lr_v</find>
       <find>SRGAN</find>
+      <find>srgan</find>
+      <find>Conv2d</find>
+      <find>train</find>
+      <find>COnv2d</find>
+      <find>conv2d</find>
+      <find>save_dir_ginit</find>
+      <find>self.logger</find>
     </findStrings>
+    <replaceStrings>
+      <replace>logging</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -145,12 +221,18 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/SRGANs/config.py" />
         <option value="$PROJECT_DIR$/frvsr/pre_processing/video_transformation.py" />
         <option value="$PROJECT_DIR$/SRGANs/gan_video_transformation.py" />
-        <option value="$PROJECT_DIR$/SRGANs/main.py" />
-        <option value="$PROJECT_DIR$/SRGANs/new_main.py" />
         <option value="$PROJECT_DIR$/SRGANs/model.py" />
+        <option value="$PROJECT_DIR$/SRGANs/new_main.py" />
+        <option value="$PROJECT_DIR$/pre_processing/video_dataset.py" />
+        <option value="$PROJECT_DIR$/frvsr/model.py" />
+        <option value="$PROJECT_DIR$/SRGANs/main.py" />
+        <option value="$PROJECT_DIR$/SRGANs/recurrent_srgan_model.py" />
+        <option value="$PROJECT_DIR$/SRGANs/recurrent_srgan_trainer.py" />
+        <option value="$PROJECT_DIR$/SRGANs/config.py" />
+        <option value="$PROJECT_DIR$/recurrent_srgan_trainer.py" />
+        <option value="$PROJECT_DIR$/pre_processing/recurrent_srgan_model.py" />
       </list>
     </option>
   </component>
@@ -176,18 +258,17 @@
             <path>
               <item name="Video-Enhancement" type="b2602c69:ProjectViewProjectNode" />
               <item name="Video-Enhancement" type="462c0819:PsiDirectoryNode" />
-              <item name="frvsr" type="462c0819:PsiDirectoryNode" />
+              <item name="check_point" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Video-Enhancement" type="b2602c69:ProjectViewProjectNode" />
               <item name="Video-Enhancement" type="462c0819:PsiDirectoryNode" />
               <item name="frvsr" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Video-Enhancement" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Video-Enhancement" type="462c0819:PsiDirectoryNode" />
               <item name="pre_processing" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Video-Enhancement" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Video-Enhancement" type="462c0819:PsiDirectoryNode" />
-              <item name="SRGANs" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -196,10 +277,14 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/srgans/tensorlayer" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/SRGANs" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/SRGANs" />
     </key>
   </component>
@@ -228,64 +313,106 @@
     </task>
     <servers />
   </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
   <component name="ToolWindowManager">
     <frame x="67" y="25" width="1853" height="1055" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24972677" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32972974" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32972974" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info anchor="bottom" id="Terminal" order="8" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.32901832" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
     </layout>
+    <layout-to-restore>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24972677" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32972974" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32972974" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.32901832" />
+      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="Python Console" order="10" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout-to-restore>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/frvsr/pre_processing/video_transformation.py">
+    <entry file="file://$PROJECT_DIR$/frvsr/pre_processing/video_transformation.py" />
+    <entry file="file://$PROJECT_DIR$/preprocess_data.py" />
+    <entry file="file://$PROJECT_DIR$/frvsr/pre_processing/video_tranformation.py" />
+    <entry file="file://$PROJECT_DIR$/SRGANs/tensorlayer/layers/convolution.py" />
+    <entry file="file://$PROJECT_DIR$/SRGANs/gan_video_transformation.py" />
+    <entry file="file://$PROJECT_DIR$/SRGANs/config.py" />
+    <entry file="file://$PROJECT_DIR$/SRGANs/recurrent_srgan_model.py" />
+    <entry file="file://$PROJECT_DIR$/SRGANs/srgan_cell_model.py" />
+    <entry file="file://$PROJECT_DIR$/SRGANs/main.py" />
+    <entry file="file://$PROJECT_DIR$/frvsr/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="82" column="20" selection-start-line="82" selection-start-column="20" selection-end-line="85" selection-end-column="38" />
+        <state relative-caret-position="1482">
+          <caret line="79" column="34" selection-start-line="79" selection-start-column="34" selection-end-line="79" selection-end-column="34" />
           <folding>
-            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SRGANs/gan_video_transformation.py">
+    <entry file="file://$PROJECT_DIR$/recurrent_srgan_trainer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="547">
-          <caret line="87" column="52" selection-start-line="87" selection-start-column="52" selection-end-line="87" selection-end-column="52" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="190">
+          <caret line="16" selection-start-line="16" selection-end-line="16" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SRGANs/config.py">
+    <entry file="file://$PROJECT_DIR$/pre_processing/config.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="8" column="19" selection-start-line="8" selection-end-line="9" />
+        <state>
           <folding>
             <element signature="e#0#38#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/preprocess_data.py">
+    <entry file="file://$PROJECT_DIR$/frvsr_trainer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="25" column="1" selection-start-line="25" selection-start-column="1" selection-end-line="25" selection-end-column="1" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pre_processing/video_reader.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <folding>
@@ -294,26 +421,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SRGANs/new_main.py">
+    <entry file="file://$PROJECT_DIR$/pre_processing/video_dataset.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="171">
-          <caret line="9" column="12" selection-start-line="9" selection-start-column="7" selection-end-line="9" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SRGANs/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="528">
-          <caret line="286" column="24" selection-start-line="286" selection-start-column="19" selection-end-line="286" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SRGANs/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="361">
-          <caret line="19" column="39" lean-forward="true" selection-start-line="19" selection-start-column="39" selection-end-line="19" selection-end-column="39" />
+          <caret line="20" column="16" selection-start-line="20" selection-start-column="16" selection-end-line="20" selection-end-column="16" />
           <folding>
-            <element signature="e#43#66#0" expanded="true" />
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pre_processing/recurrent_srgan_model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="832">
+          <caret line="214" selection-start-line="15" selection-end-line="214" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
           </folding>
         </state>
       </provider>
