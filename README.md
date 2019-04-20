@@ -60,3 +60,11 @@ import cvbase as cvb
 flow = np.random.rand(100, 100, 2).astype(np.float32)
 cvb.show_flow(flow)
 ```
+
+## FRVSR
+
+### Trainer
+In order for the trainer to work correctly a dataset must exist in a directory called `data_set`. The directory should contain any videos that should be used in the training process.
+
+To start the training process, run the following command:
+`python frvsr_trainer.py`

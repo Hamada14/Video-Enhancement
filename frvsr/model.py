@@ -1,5 +1,12 @@
+import os
 import tensorflow as tf
 import numpy as np
+import logging
+from tqdm import tqdm
+from tqdm import trange
+
+logger = logging.getLogger()
+
 
 HR_INDEX = 2
 LR_INDEX = 0
@@ -14,17 +21,11 @@ class FRVSR():
 
 
         def step(previous_output, current_input):
-
             lr_frame, flow = tf.split(current_input, [3, 2], axis=-1)
-            print(lr_frame.shape)
-            print(flow.shape)
             with tf.variable_scope("frvsr_model", reuse=tf.AUTO_REUSE):
                 upscaled_flow = tf.image.resize_bilinear(flow, tf.constant([256, 256]))
-                print(upscaled_flow.shape)
-                print(previous_output.shape)
                 # warpping the last estimate with the flow
                 warped_frame = tf.contrib.image.dense_image_warp(previous_output, upscaled_flow)
-                print(warped_frame.shape)
                 # space to depth for warpped frame
                 depth = tf.nn.space_to_depth(warped_frame, 4)
                 # concatenate the lr_frame with the depth warped frame
@@ -79,33 +80,33 @@ class FRVSR():
     # training
     def train(self, data_set, epochs=2000):
         # training session
+        global_step = -1
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
             check_point = tf.train.get_checkpoint_state(self.check_point_path)
-            saver = tf.train.Saver(max_to_keep=4, keep_checkpoint_every_n_hours=1)
+            saver = tf.train.Saver(max_to_keep=2)
             if check_point and check_point.model_checkpoint_path:
+                logger.debug('Restored to a checkpoint stored at {}'.format(check_point.model_checkpoint_path))
                 saver.restore(sess, check_point.model_checkpoint_path)
+                global_step = int(check_point.model_checkpoint_path.split('/')[-1].split('-')[-1])
+            else:
+                logger.debug('No checkpoint is found for FRVSR to load')
             train_loss = 0
             current_iteration = 0
-            try:
-                for i in range(epochs):
-                    current_iteration = i
-                    steps = 100
-                    for j in range(steps):
-                        lr_frame_input, hr_frame_input, flow_input = data_set.next_data()
-                        _, train_loss_ = sess.run([self.train_op, self.loss], feed_dict={
-                            self.lr_frame_input:lr_frame_input,
-                            self.hr_frame_input:hr_frame_input,
-                            self.flow_input:flow_input
-                        })
-                        print('[{}] loss : {}'.format(i, train_loss_))
-                        train_loss += train_loss_
-                    print('[{}] loss : {}'.format(i, train_loss/steps))
-                    saver.save(sess, self.check_point_path, global_step=current_iteration)
-                    train_loss = 0
-            except KeyboardInterrupt:
-                print('interrupted by user at ' + str(i))
-                #
-                # training ends here;
-                #  save checkpoint
-                saver.save(sess, self.check_point_path, global_step=current_iteration + 1 + epochs)
+            for i in range(epochs):
+                steps = 5
+                progress_bar = trange(steps, desc='Training', leave=True)
+                global_step = global_step + 1
+                for j in progress_bar:
+                    lr_frame_input, hr_frame_input, flow_input = data_set.next_data()
+                    _, train_loss_ = sess.run([self.train_op, self.loss], feed_dict={
+                        self.lr_frame_input:lr_frame_input,
+                        self.hr_frame_input:hr_frame_input,
+                        self.flow_input:flow_input
+                    })
+                    train_loss += train_loss_
+                    progress_bar.set_description('last loss : {:.2f}, average loss: {:.2f}'.format(train_loss_, train_loss/(j + 1)))
+                    progress_bar.refresh()
+                logger.debug('[epoch:{:.0f}] Finished the current Epoch with average loss : {:.2f}'.format(i, train_loss/steps))
+                saver.save(sess, self.check_point_path + 'frvsr.ckpt', global_step=global_step)
+                train_loss = 0
