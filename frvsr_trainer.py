@@ -7,9 +7,9 @@ from flow_model_wrapper import FlowModelWrapper
 from pre_processing.video_dataset import VideoDataSet
 from frvsr.model import FRVSR
 
-BATCH_SIZE = 1
-FRAMES_LEN = 4
-FRAME_TRY = 3
+BATCH_SIZE = 4
+FRAMES_LEN = 10
+FRAME_TRY = 15
 
 LR_HEIGHT = 64
 LR_WIDTH = 64
