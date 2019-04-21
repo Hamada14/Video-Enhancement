@@ -15,7 +15,8 @@ LR_HEIGHT = 64
 LR_WIDTH = 64
 IMAGE_CHANNELS = 3
 FLOW_DEPTH = 2
-
+HIGH_IMG_SIZE = 256
+SCALE_FACTOR = 4
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 now = datetime.now()
@@ -36,7 +37,9 @@ video_dataset = VideoDataSet(
     DATA_SET_PATH,
     BATCH_SIZE,
     FRAMES_LEN,
-    FRAME_TRY
+    FRAME_TRY,
+    HIGH_IMG_SIZE,
+    SCALE_FACTOR
 )
 
 frvsr_model = FRVSR(

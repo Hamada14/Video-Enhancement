@@ -11,17 +11,7 @@ import glob
 
 import cvbase as cvb
 
-HIGH_WIDTH = 128
-HIGH_HEIGHT = 128
-
-LOW_WIDTH = 32
-LOW_HEIGHT = 32
-
-FLOW_WIDTH = 32
-FLOW_HEIGHT = 32
-
 IMAGE_DEPTH = 3
-FLOW_DEPTH = 3
 
 TEMPORAL_STEPS = 10
 
@@ -30,7 +20,7 @@ GAUSSIAN_Y_STD = 1.5
 
 
 class VideoDataSet():
-    def __init__(self, flow_net, directory, batch_size, frames_len, frame_max_try):
+    def __init__(self, flow_net, directory, batch_size, frames_len, frame_max_try, high_img_size, scale_factor):
         self.flow_net = flow_net
         self.batch_size = batch_size
         self.frames_len = frames_len
@@ -41,15 +31,17 @@ class VideoDataSet():
         self.current_video_reader = VideoReader(self.videos[0])
         self.current_frames = self.current_video_reader.read_batch(self.frames_len)
         self.current_down_scaled = down_scale_batch(self.current_frames, 2)
+        self.high_img_size = high_img_size
+        self.scale_factor = scale_factor
 
 
     def next_data(self):
         hr_batches, lr_batches = self.generate_random_batches(
             self.current_down_scaled,
-            HIGH_WIDTH,
-            HIGH_HEIGHT,
+            self.high_img_size,
+            self.high_img_size,
             self.batch_size,
-            HIGH_WIDTH // LOW_WIDTH
+            self.scale_factor
         )
         flow_batches = calculate_batch_flows(lr_batches, self.flow_net)
         self.frame_try += 1
@@ -94,8 +86,6 @@ class VideoDataSet():
 def get_files_in_dir(directory):
     files = [f for f in glob.glob(directory + "/*")]
     np.random.shuffle(files)
-    print(directory)
-    print(files)
     return files
 
 
@@ -119,7 +109,7 @@ def calculate_flow(low_batch, flow_net):
     flow_results = []
     for idx in range(len(low_batch)):
         if idx == 0:
-            low_1 = np.zeros((LOW_WIDTH, LOW_HEIGHT, IMAGE_DEPTH))
+            low_1 = np.zeros((low_batch[0].shape[0], low_batch[1].shape[1], IMAGE_DEPTH))
         else:
             low_1 = low_batch[idx - 1]
         low_2 = low_batch[idx]
