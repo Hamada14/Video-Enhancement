@@ -4,6 +4,7 @@
 # check points
 check_point/frvsr/
 data_set/
+logs/log-*
 
 #FlowNet2 Pretrained Models
 flownet2/models/*.pth.tar
