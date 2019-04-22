@@ -65,21 +65,20 @@ class RecurrentSRGAN():
             d_loss1 = tl.cost.sigmoid_cross_entropy(self.logits_real, tf.ones_like(self.logits_real), name='d1')
             d_loss2 = tl.cost.sigmoid_cross_entropy(self.logits_fake, tf.zeros_like(self.logits_fake), name='d2')
             d_loss = d_loss1 + d_loss2
-            self.unrolled_d_total_loss.assign_add(d_loss)
+            self.unrolled_d_total_loss = d_loss
             # TODO check multiply here or at the end only multiply total loss???
             g_gan_loss = 3e-3 * tl.cost.sigmoid_cross_entropy(self.logits_fake, tf.ones_like(self.logits_fake), name='g')
             mse_loss = tl.cost.mean_squared_error(self.output_image,self.t_target_image[:,t], is_mean=True)
-            self.unrolled_mse_total_loss.assign_add(mse_loss)
+            self.unrolled_mse_total_loss = mse_loss
             g_loss = mse_loss + g_gan_loss
-            self.unrolled_g_total_loss.assign_add(g_loss)
+            self.unrolled_g_total_loss = g_loss
             self.net_g.print_params(False)
             self.net_d.print_params(False)
 
         self.g_vars = tl.layers.get_variables_with_name('SRGAN_g', True, True)
         self.d_vars = tl.layers.get_variables_with_name('SRGAN_d', True, True)
 
-        logging.info('printing variables')
-        logging.info(tf.trainable_variables())
+        
         with tf.variable_scope('learning_rate'):
             self.lr_v = tf.Variable(self.lr_init, trainable=False)
         ## Pretrain with mse first
@@ -94,6 +93,7 @@ class RecurrentSRGAN():
         ## initialize G
         n_epoch_init = config.TRAIN.n_epoch_init
         ## create folders to save result images and trained model
+        tl.global_flag['mode'] = 'srgan'
         save_dir_gan = "samples/{}_gan".format(tl.global_flag['mode'])
         tl.files.exists_or_mkdir(save_dir_gan)
         checkpoint_dir = config.Model.check_point_path
@@ -113,29 +113,31 @@ class RecurrentSRGAN():
         for epoch in range(0, n_epoch_init + 1):
             epoch_time = time.time()
             total_mse_loss, n_iter = 0, 0
-            steps = config.TRAIN.data_points / self.batch_size
+            steps = config.TRAIN.data_points // self.batch_size
             for idx in range(steps):
                 step_time = time.time()
                 lr_frame_input, hr_frame_input, flow_input = video_set.next_data()
-                initial_output = self.initial_output_image.eval()
-                errM, _ = sess.run([self.unrolled_mse_total_loss, self.g_init_train],
-                                   {self.t_image: lr_frame_input, self.t_target_image: hr_frame_input
-                                       , self.t_optical_flow: flow_input,
-                                    self.output_image: initial_output})
-                logging.info("Epoch [%2d/%2d] %4d time: %4.4fs, mse: %.8f " % (
-                    epoch, n_epoch_init, n_iter, time.time() - step_time, errM))
-                total_mse_loss += errM
-                n_iter += 1
-                logging.info("[*] Epoch: [%2d/%2d] time: %4.4fs, mse: %.8f" % (
-                    epoch, n_epoch_init, time.time() - epoch_time, total_mse_loss / n_iter))
+                print("Printing flow input")
+                print(np.shape(flow_input))
+                #initial_output = self.initial_output_image.eval()
+                #errM, _ = sess.run([self.unrolled_mse_total_loss, self.g_init_train],
+                #                  {self.t_image: lr_frame_input, self.t_target_image: hr_frame_input
+                #                       , self.t_optical_flow: flow_input,
+                #                    self.output_image: initial_output})
+                #logging.info("Epoch [%2d/%2d] %4d time: %4.4fs, mse: %.8f " % (
+                #    epoch, n_epoch_init, n_iter, time.time() - step_time, errM))
+                #total_mse_loss += errM
+                #n_iter += 1
+                #logging.info("[*] Epoch: [%2d/%2d] time: %4.4fs, mse: %.8f" % (
+                #    epoch, n_epoch_init, time.time() - epoch_time, total_mse_loss / n_iter))
 
                 ## save model
-            if (epoch != 0) and (epoch % 10 == 0):
-                tl.files.save_npz(self.net_g.all_params,
-                                  name=checkpoint_dir + '/g_{}_init.npz'.format(tl.global_flag['mode']), sess=sess)
+            #if (epoch != 0) and (epoch % 10 == 0):
+                #tl.files.save_npz(self.net_g.all_params,
+                                  #name=checkpoint_dir + '/g_{}_init.npz'.format(tl.global_flag['mode']), sess=sess)
 
     def train(self, video_set):
-
+        tl.global_flag['mode'] = 'srgan'
         save_dir_gan = "samples/{}_gan".format(tl.global_flag['mode'])
         tl.files.exists_or_mkdir(save_dir_gan)
         checkpoint_dir = config.Model.check_point_path
@@ -175,7 +177,7 @@ class RecurrentSRGAN():
 
             epoch_time = time.time()
             total_d_loss, total_g_loss, n_iter = 0, 0, 0
-            steps = config.TRAIN.data_points / self.batch_size
+            steps = config.TRAIN.data_points // self.batch_size
             for idx in range(steps):
                     step_time = time.time()
                     lr_batches, hr_batches, flow_input = video_set.next_data()

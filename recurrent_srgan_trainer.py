@@ -26,5 +26,5 @@ video_dataset = VideoDataSet(
 )
 
 srgan_model = RecurrentSRGAN()
-segan_model = train_initial_generator(video_set)
-srgan_model.train(video_dataset)
+srgan_model.train_initial_generator(video_dataset)
+#srgan_model.train(video_dataset)

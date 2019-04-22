@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
-import logging
+
 import numpy as np
 import tensorflow as tf
 
@@ -130,6 +130,7 @@ def set_name_reuse(enable=True):
     - see ``tutorial_ptb_lstm.py`` for example.
 
     """
+   
     set_keep['name_reuse'] = enable
 
 
@@ -1310,4 +1311,3 @@ class DropconnectDenseLayer(Layer):
         self.all_drop.update({set_keep[name]: keep})
         self.all_layers.extend([self.outputs])
         self.all_params.extend([W, b])
-

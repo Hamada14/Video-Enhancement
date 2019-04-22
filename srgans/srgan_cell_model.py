@@ -33,7 +33,6 @@ def SRGAN_generator(raw_frame, wrapped_frame,  reuse=False):
         # Upscaling
         for i in range(2):
             nn = Conv2d(n, 256, (3, 3), (1, 1), act=None, padding='SAME', W_init=w_init, b_init=b_init, name='n256s1/c3/%s' % i)
-            #n_outputs = n.outputs
             nn = tf.nn.depth_to_space(nn.outputs, 2)
             nn = tf.nn.relu(nn)
             n = InputLayer(nn, name = 'after_depth_space/%s' % i)
