@@ -7,7 +7,6 @@ from tqdm import trange
 
 logger = logging.getLogger()
 
-
 HR_INDEX = 2
 LR_INDEX = 0
 FLOW_INDEX = 1
@@ -92,9 +91,8 @@ class FRVSR():
             else:
                 logger.debug('No checkpoint is found for FRVSR to load')
             train_loss = 0
-            current_iteration = 0
             for i in range(epochs):
-                steps = 5
+                steps = 100
                 progress_bar = trange(steps, desc='Training', leave=True)
                 global_step = global_step + 1
                 for j in progress_bar:

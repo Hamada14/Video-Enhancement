@@ -114,7 +114,6 @@ def imgs_example():
     ]
     flow = s.inference_imgs(images[0], images[1])
 
-    print(np.shape(flow))
     flow_path = join(
         os.path.dirname(os.path.realpath(__file__)),
         'flownet2',
@@ -122,5 +121,3 @@ def imgs_example():
         '0001.flo'
     )
     flow_utils.writeFlow(flow_path, flow)
-
-imgs_example()
