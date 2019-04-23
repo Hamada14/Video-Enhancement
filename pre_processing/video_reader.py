@@ -9,9 +9,11 @@ class VideoReader:
     def __init__(self, source_video_path):
         self.source_video_path = source_video_path
         self.video_capture = cv2.VideoCapture(source_video_path)
+        logger.info('Currently reading video {}'.format(source_video_path))
 
     def read_batch(self, batch_size):
-        success, image = self.video_capture.read()
+        for i in range(20):
+            success, image = self.video_capture.read()
         if not success:
             logger.info('Could not find the video in the specified location {' + self.source_video_path + '}')
         frames = []
