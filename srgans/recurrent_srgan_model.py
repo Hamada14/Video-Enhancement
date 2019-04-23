@@ -27,7 +27,7 @@ class RecurrentSRGAN():
         self.high_height = config.Model.high_height
         self.low_width = config.Model.low_width
         self.low_height = config.Model.low_height
-        config.Model.high_height = 128
+       
 
 
 
@@ -43,7 +43,9 @@ class RecurrentSRGAN():
         #previous output frame after wrapping with optical flow
         self.initial_output_image = self.output_image = tf.Variable(tf.zeros((self.batch_size, self.high_width, self.high_height, 3)), name="output_HR_frame")
 
-        self.t_optical_flow = tf.placeholder('float32',[self.batch_size, self.time_steps, self.high_width, self.high_height, 2]
+        self.raw_optical_flow = tf.placeholder('float32',[self.batch_size, self.time_steps, self.low_width, self.low_height, 2]
+                                        , name='t_optical_flow')
+        self.t_optical_flow = tf.placeholder('float32',[self.batch_size, self.high_width, self.high_height, 2]
                                         , name='t_optical_flow')
 
         self.unrolled_d_total_loss = tf.Variable(0.0, name="D_unrolled_loss")
@@ -56,7 +58,9 @@ class RecurrentSRGAN():
             #logging.info(self.t_optical_flow[:,t])
 	    #logging.info("t self output image")
             #logging.info(self.t_optical_flow[:,t])
-            self.t_wrapped_image = tf.contrib.image.dense_image_warp(self.output_image, self.t_optical_flow[:,t])
+
+            self.t_optical_flow = tf.image.resize_bilinear(self.raw_optical_flow[:,t], tf.constant([256, 256]))
+            self.t_wrapped_image = tf.contrib.image.dense_image_warp(self.output_image, self.t_optical_flow)
             self.net_g , self.output_image = SRGAN_generator(self.t_image[:,t], self.t_wrapped_image ,
                                                                reuse=tf.AUTO_REUSE)
             self.net_d, self.logits_real = SRGAN_discriminator(self.t_target_image[:,t],
@@ -65,13 +69,13 @@ class RecurrentSRGAN():
             d_loss1 = tl.cost.sigmoid_cross_entropy(self.logits_real, tf.ones_like(self.logits_real), name='d1')
             d_loss2 = tl.cost.sigmoid_cross_entropy(self.logits_fake, tf.zeros_like(self.logits_fake), name='d2')
             d_loss = d_loss1 + d_loss2
-            self.unrolled_d_total_loss = d_loss
+            self.unrolled_d_total_loss += d_loss
             # TODO check multiply here or at the end only multiply total loss???
             g_gan_loss = 3e-3 * tl.cost.sigmoid_cross_entropy(self.logits_fake, tf.ones_like(self.logits_fake), name='g')
             mse_loss = tl.cost.mean_squared_error(self.output_image,self.t_target_image[:,t], is_mean=True)
-            self.unrolled_mse_total_loss = mse_loss
+            self.unrolled_mse_total_loss += mse_loss
             g_loss = mse_loss + g_gan_loss
-            self.unrolled_g_total_loss = g_loss
+            self.unrolled_g_total_loss += g_loss
             self.net_g.print_params(False)
             self.net_d.print_params(False)
 
@@ -116,25 +120,23 @@ class RecurrentSRGAN():
             steps = config.TRAIN.data_points // self.batch_size
             for idx in range(steps):
                 step_time = time.time()
-                lr_frame_input, hr_frame_input, flow_input = video_set.next_data()
-                print("Printing flow input")
-                print(np.shape(flow_input))
-                #initial_output = self.initial_output_image.eval()
-                #errM, _ = sess.run([self.unrolled_mse_total_loss, self.g_init_train],
-                #                  {self.t_image: lr_frame_input, self.t_target_image: hr_frame_input
-                #                       , self.t_optical_flow: flow_input,
-                #                    self.output_image: initial_output})
-                #logging.info("Epoch [%2d/%2d] %4d time: %4.4fs, mse: %.8f " % (
-                #    epoch, n_epoch_init, n_iter, time.time() - step_time, errM))
-                #total_mse_loss += errM
-                #n_iter += 1
-                #logging.info("[*] Epoch: [%2d/%2d] time: %4.4fs, mse: %.8f" % (
-                #    epoch, n_epoch_init, time.time() - epoch_time, total_mse_loss / n_iter))
+                lr_frame_input, hr_frame_input, flow_input = video_set.next_data()         
+                initial_output = sess.run(self.initial_output_image)
+                errM, _ = sess.run([self.unrolled_mse_total_loss, self.g_init_train],
+                                  {self.t_image: lr_frame_input, self.t_target_image: hr_frame_input
+                                       , self.raw_optical_flow: flow_input,
+                                     self.output_image: initial_output})
+                logging.info("Epoch [%2d/%2d] %4d time: %4.4fs, mse: %.8f " % (
+                    epoch, n_epoch_init, n_iter, time.time() - step_time, errM))
+                total_mse_loss += errM
+                n_iter += 1
+                logging.info("[*] Epoch: [%2d/%2d] time: %4.4fs, mse: %.8f" % (
+                    epoch, n_epoch_init, time.time() - epoch_time, total_mse_loss / n_iter))
 
                 ## save model
-            #if (epoch != 0) and (epoch % 10 == 0):
-                #tl.files.save_npz(self.net_g.all_params,
-                                  #name=checkpoint_dir + '/g_{}_init.npz'.format(tl.global_flag['mode']), sess=sess)
+            if (epoch != 0) and (epoch % 10 == 0):
+                tl.files.save_npz(self.net_g.all_params,
+                                  name=checkpoint_dir + '/g_{}_init.npz'.format(tl.global_flag['mode']), sess=sess)
 
     def train(self, video_set):
         tl.global_flag['mode'] = 'srgan'
@@ -181,15 +183,15 @@ class RecurrentSRGAN():
             for idx in range(steps):
                     step_time = time.time()
                     lr_batches, hr_batches, flow_input = video_set.next_data()
-                    initial_output = self.initial_output_image.eval()
+                    initial_output = sess.run(self.initial_output_image)
                     ## update D
                     errD, _ = sess.run([self.unrolled_d_total_loss , self.d_train], {self.t_image: lr_batches,
                                                                                      self.t_target_image: hr_batches
-                        ,self.t_optical_flow : flow_input, self.output_image : initial_output})
+                        ,self.raw_optical_flow : flow_input, self.output_image : initial_output})
                     #update G
                     errG, errM, _ = sess.run([self.unrolled_g_total_loss, self.unrolled_mse_total_loss, self.g_train],
                                              {self.t_image: lr_batches, self.t_target_image: hr_batches
-                                                                                 ,self.t_optical_flow : flow_input,
+                                                                                 ,self.raw_optical_flow : flow_input,
                                                                                  self.output_image : initial_output})
                     logging.info("Epoch [%2d/%2d] %4d time: %4.4fs, d_loss: %.8f g_loss: %.8f (mse: %.6f)" %
                           (epoch, n_epoch, n_iter, time.time() - step_time, errD, errG, errM))

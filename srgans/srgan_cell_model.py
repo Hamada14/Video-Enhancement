@@ -38,7 +38,7 @@ def SRGAN_generator(raw_frame, wrapped_frame,  reuse=False):
             n = InputLayer(nn, name = 'after_depth_space/%s' % i)
         n = Conv2d(n, 3, (3, 3), (1, 1), act=None, padding='SAME',   W_init=w_init, b_init=b_init, name='n3s1/c4')
 
-        temp = tf.image.resize_bicubic(raw_frame,[128,128])
+        temp = tf.image.resize_bicubic(raw_frame,[256,256])
         temp = InputLayer(temp, name = 'raw_frame_After_bicubic')
         n = ElementwiseLayer([n, temp], tf.add, 'b_residual_add')
     return n, n.outputs
