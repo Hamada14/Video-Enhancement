@@ -68,9 +68,7 @@ class FRVSR():
         # batch_size * frames_len * hr_h * hr_w * channels
         output = tf.transpose(states, [1, 0, 2, 3, 4])
 
-        losses = tf.map_fn(tf.nn.l2_loss, tf.to_float(hr_frame_input - output))
-        self.loss = tf.reduce_mean(losses)
-        # self.loss = tf.reduce_mean(tf.reduce_sum(tf.squared_difference(output, hr_frame_input), [1, 2, 3, 4]))
+        self.loss = tf.reduce_mean(tf.reduce_sum(tf.squared_difference(output, hr_frame_input), [1, 2, 3, 4]))
         self.train_op = tf.train.AdagradOptimizer(learning_rate=1e-4).minimize(self.loss)
         self.predict = output
         self.check_point_path = check_point_path
@@ -98,16 +96,18 @@ class FRVSR():
                 logger.debug('No checkpoint is found for FRVSR to load')
             train_loss = 0
             for i in range(epochs):
-                steps = 20
+                steps = 100
                 progress_bar = trange(steps, desc='Training', leave=True)
                 global_step = global_step + 1
                 for j in progress_bar:
                     lr_frame_input, hr_frame_input, flow_input = data_set.next_data()
-                    _, train_loss_, _predict = sess.run([self.train_op, self.loss, self.predict], feed_dict={
-                        self.lr_frame_input:lr_frame_input,
-                        self.hr_frame_input:hr_frame_input,
-                        self.flow_input:flow_input
-                    })
+                    trial_max_count = 40
+                    for trial in range(trial_max_count):
+                        _, train_loss_ = sess.run([self.train_op, self.loss], feed_dict={
+                            self.lr_frame_input:lr_frame_input,
+                            self.hr_frame_input:hr_frame_input,
+                            self.flow_input:flow_input
+                        })
                     train_loss += train_loss_
                     progress_bar.set_description('last loss : {:.2f}, average loss: {:.2f}'.format(train_loss_, train_loss/(j + 1)))
                     progress_bar.refresh()
@@ -155,3 +155,8 @@ class FRVSR():
         print(hr[0])
         print(lr[0])
         print(predict_hr[0])
+
+    def show_image(self, img):
+        img = np.clip(img, 0, 1) * 255
+        img = img.astype(np.uint8)
+        misc.imshow(img)

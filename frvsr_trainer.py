@@ -7,9 +7,9 @@ from flow_model_wrapper import FlowModelWrapper
 from pre_processing.video_dataset import VideoDataSet
 from frvsr.model import FRVSR
 
-BATCH_SIZE = 1 # change to 4
-FRAMES_LEN = 4 # change to 10
-FRAME_TRY = 1 # change to 15
+BATCH_SIZE = 4 # change to 4
+FRAMES_LEN = 10 # change to 10
+FRAME_TRY = 10 # change to 15
 
 LR_HEIGHT = 64
 LR_WIDTH = 64
@@ -52,9 +52,4 @@ frvsr_model = FRVSR(
     CHECK_POINT_PATH
 )
 
-
-#  frvsr_model.train(video_dataset)
-
-for i in range(10):
-    lr, hr, flow = video_dataset.next_data()
-    frvsr_model.test_inference(lr, flow, hr)
+frvsr_model.train(video_dataset)

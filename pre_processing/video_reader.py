@@ -12,14 +12,14 @@ class VideoReader:
         logger.info('Currently reading video {}'.format(source_video_path))
 
     def read_batch(self, batch_size):
-        for i in range(20):
-            success, image = self.video_capture.read()
+        success, image = self.video_capture.read()
         if not success:
             logger.info('Could not find the video in the specified location {' + self.source_video_path + '}')
         frames = []
         frame_number = 0
         while (frame_number < batch_size and success):
             frames.append(image)
-            success, image = self.video_capture.read()
+            if frame_number < batch_size - 1:
+                success, image = self.video_capture.read()
             frame_number += 1
         return frames
