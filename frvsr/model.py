@@ -98,7 +98,7 @@ class FRVSR():
                 logger.debug('No checkpoint is found for FRVSR to load')
             train_loss = 0
             for i in range(epochs):
-                steps = 200
+                steps = 1000
                 progress_bar = trange(steps, desc='Training', leave=True)
                 global_step = global_step + 1
                 preprocessing_time = 0
