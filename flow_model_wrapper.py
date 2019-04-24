@@ -88,11 +88,29 @@ class FlowModelWrapper:
         images = np.array([img1, img2]).transpose(3, 0, 1, 2)
         data = torch.from_numpy(images.astype(np.float32)).unsqueeze(0).cuda()
         target = torch.zeros(data.size()[0:1] + (2,) + data.size()[-2:])
-        data, target = [Variable(data.cuda(non_blocking=True))], [Variable(target.cuda(non_blocking=True))]
+        data, target = Variable(data.cuda(non_blocking=True)), Variable(target.cuda(non_blocking=True))
         with torch.no_grad():
-            losses, result = self.model(data[0], target[0], inference=True)
+            losses, result = self.model(data, target, inference=True)
         return result[0].data.cpu().numpy().transpose(1, 2, 0)
 
+
+    def inference_imgs_batch(self, img1_batch, img2_batch):
+        self.model.eval()
+        batch_size = len(img1_batch)
+        images = []
+        for i in range(batch_size):
+            img1 = img2_batch[i]
+            img2 = img2_batch[i]
+            images.append(np.array([img1, img2]).transpose(3, 0, 1, 2))
+        images = np.array(images)
+        data = torch.from_numpy(images.astype(np.float32)).cuda()
+        target = torch.zeros(data.size()[0:1] + (2,) + data.size()[-2:])
+        with torch.no_grad():
+            losses, result = self.model(data, target, inference=True)
+        batch_result = []
+        for i in range(batch_size):
+            batch_result.append(result[i].data.cpu().numpy().transpose(1, 2, 0))
+        return np.array(batch_result)
 
 
 def dir_example():

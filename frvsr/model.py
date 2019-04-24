@@ -101,13 +101,11 @@ class FRVSR():
                 global_step = global_step + 1
                 for j in progress_bar:
                     lr_frame_input, hr_frame_input, flow_input = data_set.next_data()
-                    trial_max_count = 40
-                    for trial in range(trial_max_count):
-                        _, train_loss_ = sess.run([self.train_op, self.loss], feed_dict={
-                            self.lr_frame_input:lr_frame_input,
-                            self.hr_frame_input:hr_frame_input,
-                            self.flow_input:flow_input
-                        })
+                    _, train_loss_ = sess.run([self.train_op, self.loss], feed_dict={
+                        self.lr_frame_input:lr_frame_input,
+                        self.hr_frame_input:hr_frame_input,
+                        self.flow_input:flow_input
+                    })
                     train_loss += train_loss_
                     progress_bar.set_description('last loss : {:.2f}, average loss: {:.2f}'.format(train_loss_, train_loss/(j + 1)))
                     progress_bar.refresh()

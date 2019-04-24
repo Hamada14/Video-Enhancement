@@ -98,22 +98,20 @@ def down_scale_batch(frames, factor):
     return down_scaled
 
 
-def calculate_batch_flows(lr_batches, flow_net):
-    flow_batches = []
-    for lr_batch in lr_batches:
-        flow_batches.append(calculate_flow(lr_batch, flow_net))
-    return flow_batches
-
-
-def calculate_flow(low_batch, flow_net):
-    flow_results = []
-    for idx in range(len(low_batch)):
+def calculate_batch_flows(low_batches, flow_net):
+    low_batches = np.array(low_batches)
+    batch_size = low_batches.shape[0]
+    seq = low_batches.shape[1]
+    h = low_batches.shape[2]
+    w = low_batches.shape[3]
+    flow_results = np.zeros((batch_size, seq, h, w, 2))
+    for idx in range(seq):
         if idx == 0:
-            low_1 = np.zeros((low_batch[0].shape[0], low_batch[1].shape[1], IMAGE_DEPTH))
+            low_1 = np.zeros((batch_size, h, w, IMAGE_DEPTH))
         else:
-            low_1 = low_batch[idx - 1]
-        low_2 = low_batch[idx]
-        flow_results.append(flow_net.inference_imgs(low_1, low_2))
+            low_1 = low_batches[:, idx - 1]
+        low_2 = low_batches[:, idx]
+        flow_results[:, idx] = flow_net.inference_imgs_batch(low_1, low_2)
     return flow_results
 
 
