@@ -2,6 +2,7 @@ import os
 import tensorflow as tf
 import numpy as np
 import logging
+import time
 from tqdm import tqdm
 from tqdm import trange
 
@@ -15,6 +16,7 @@ logger = logging.getLogger()
 HR_INDEX = 2
 LR_INDEX = 0
 FLOW_INDEX = 1
+
 
 class FRVSR():
     def __init__(self, batch_size, frames_len, height, width, channels, flow_depth, check_point_path):
@@ -45,9 +47,9 @@ class FRVSR():
                     pre = conv2
 
                 transpose_1 = tf.layers.conv2d_transpose(pre, 64, [3, 3], strides=2, padding='same', name="transpose_1", kernel_initializer=tf.contrib.layers.xavier_initializer())
-                relu_1 = tf.nn.relu(transpose_1, name="relu_1")
+                relu_1 = tf.nn.relu(transpose_1, name="post_relu_1")
                 transpose_2 = tf.layers.conv2d_transpose(relu_1, 64, [3, 3], strides=2, padding='same', name="transpose_2", kernel_initializer=tf.contrib.layers.xavier_initializer())
-                relu_2 = tf.nn.relu(transpose_2, name="relu_2")
+                relu_2 = tf.nn.relu(transpose_2, name="post_relu_2")
                 estimate = tf.layers.conv2d(inputs=relu_2, filters=3, kernel_size=[3, 3], padding="same", strides=1, name="estimate", kernel_initializer=tf.contrib.layers.xavier_initializer())
                 return estimate
 
@@ -99,17 +101,24 @@ class FRVSR():
                 steps = 100
                 progress_bar = trange(steps, desc='Training', leave=True)
                 global_step = global_step + 1
+                preprocessing_time = 0
+                training_time = 0
                 for j in progress_bar:
+                    start_time = time.time()
                     lr_frame_input, hr_frame_input, flow_input = data_set.next_data()
+                    after_preprocessing_time = time.time()
                     _, train_loss_ = sess.run([self.train_op, self.loss], feed_dict={
                         self.lr_frame_input:lr_frame_input,
                         self.hr_frame_input:hr_frame_input,
                         self.flow_input:flow_input
                     })
+                    preprocessing_time += after_preprocessing_time - start_time
+                    training_time += time.time() - after_preprocessing_time
                     train_loss += train_loss_
                     progress_bar.set_description('last loss : {:.2f}, average loss: {:.2f}'.format(train_loss_, train_loss/(j + 1)))
                     progress_bar.refresh()
                 logger.debug('[epoch:{:.0f}] Finished the current Epoch with average loss : {:.2f}'.format(i, train_loss/steps))
+                logger.debug('[epoch:{:.0f}] Training time: {}, Preprocessing time: {:.2f}'.format(i, training_time, preprocessing_time))
                 saver.save(sess, self.check_point_path + 'frvsr.ckpt', global_step=global_step)
                 train_loss = 0
 
