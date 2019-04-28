@@ -7,9 +7,6 @@ from flow_model_wrapper import FlowModelWrapper
 from pre_processing.video_dataset import VideoDataSet
 from frvsr.model import FRVSR
 
-BATCH_SIZE = 1 # change to 4
-FRAMES_LEN = 4 # change to 10
-FRAME_TRY = 10 # change to 15
 
 LR_HEIGHT = 64
 LR_WIDTH = 64
@@ -32,24 +29,61 @@ logging.basicConfig(
 CHECK_POINT_PATH = os.path.join(dir_path, 'check_point/frvsr/')
 DATA_SET_PATH = os.path.join(dir_path, 'data_set')
 
-video_dataset = VideoDataSet(
-    FlowModelWrapper.getInstance(),
-    DATA_SET_PATH,
-    BATCH_SIZE,
-    FRAMES_LEN,
-    FRAME_TRY,
-    HIGH_IMG_SIZE,
-    SCALE_FACTOR
-)
+def train():
+    BATCH_SIZE = 4 # change to 4
+    FRAMES_LEN = 10 # change to 10
+    FRAME_TRY = 10 # change to 15
 
-frvsr_model = FRVSR(
-    BATCH_SIZE,
-    FRAMES_LEN,
-    LR_HEIGHT,
-    LR_WIDTH,
-    IMAGE_CHANNELS,
-    FLOW_DEPTH,
-    CHECK_POINT_PATH
-)
+    video_dataset = VideoDataSet(
+        FlowModelWrapper.getInstance(),
+        DATA_SET_PATH,
+        BATCH_SIZE,
+        FRAMES_LEN,
+        FRAME_TRY,
+        HIGH_IMG_SIZE,
+        SCALE_FACTOR
+    )
 
-frvsr_model.train(video_dataset)
+    frvsr_model = FRVSR(
+        BATCH_SIZE,
+        FRAMES_LEN,
+        LR_HEIGHT,
+        LR_WIDTH,
+        IMAGE_CHANNELS,
+        FLOW_DEPTH,
+        CHECK_POINT_PATH
+    )
+
+    frvsr_model.train(video_dataset)
+
+
+def inference():
+    BATCH_SIZE = 1 # change to 4
+    FRAMES_LEN = 4 # change to 10
+    FRAME_TRY = 1 # change to 15
+
+    video_dataset = VideoDataSet(
+        FlowModelWrapper.getInstance(),
+        DATA_SET_PATH,
+        BATCH_SIZE,
+        FRAMES_LEN,
+        FRAME_TRY,
+        HIGH_IMG_SIZE,
+        SCALE_FACTOR
+    )
+
+    frvsr_model = FRVSR(
+        BATCH_SIZE,
+        FRAMES_LEN,
+        LR_HEIGHT,
+        LR_WIDTH,
+        IMAGE_CHANNELS,
+        FLOW_DEPTH,
+        CHECK_POINT_PATH
+    )
+
+    for i in range(10):
+        lr, hr, flow = video_dataset.next_data()
+        frvsr_model.test_inference(lr, flow, hr)
+train()
+#inference()

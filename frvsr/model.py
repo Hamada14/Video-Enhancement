@@ -133,35 +133,32 @@ class FRVSR():
                 saver.restore(sess, check_point.model_checkpoint_path)
             else:
                 logger.debug('No checkpoint is found for FRVSR to load')
-            predict_hr, train_loss = sess.run([self.predict, self.loss], feed_dict={
-                self.lr_frame_input:lr_inputs,
-                self.hr_frame_input:hr_inputs,
-                self.flow_input:flow_inputs
-            })
-        print("Training loss is {:.2}".format(train_loss))
-        self.plot_inference(lr_inputs[0], predict_hr[0], hr_inputs[0])
+            for i in range(2000):
+                predict_hr, train_loss, _ = sess.run([self.predict, self.loss, self.train_op], feed_dict={
+                    self.lr_frame_input:lr_inputs,
+                    self.hr_frame_input:hr_inputs,
+                    self.flow_input:flow_inputs
+                })
+                print("Training loss is {:.2}".format(train_loss))
+                if i % 100 == 0:
+                    self.plot_inference(lr_inputs[0], predict_hr[0], hr_inputs[0])
 
 
     def plot_inference(self, lr, predict_hr, hr):
+        i = 2
+        print('Plotting index: {}'.format(i))
+        hr[i] = 255 * hr[i]
+        hr[i] = hr[i].astype(np.uint8)
 
-        for i in range(len(lr)):
-            print(i)
-            hr[i] = 255 * hr[i]
-            hr[i] = hr[i].astype(np.uint8)
+        lr[i] = 255 * lr[i]
+        lr[i] = lr[i].astype(np.uint8)
 
-            lr[i] = 255 * lr[i]
-            lr[i] = lr[i].astype(np.uint8)
+        predict_hr[i] = 255 * np.clip(predict_hr[i], 0, 1)
+        predict_hr[i] = predict_hr[i].astype(np.uint8)
 
-            predict_hr[i] = 255 * np.clip(predict_hr[i], 0, 1)
-            predict_hr[i] = predict_hr[i].astype(np.uint8)
-
-            misc.imshow(hr[i])
-            misc.imshow(predict_hr[i])
-            misc.imshow(lr[i])
-        print("After")
-        print(hr[0])
-        print(lr[0])
-        print(predict_hr[0])
+        misc.imshow(hr[i])
+        misc.imshow(predict_hr[i])
+        misc.imshow(lr[i])
 
     def show_image(self, img):
         img = np.clip(img, 0, 1) * 255
