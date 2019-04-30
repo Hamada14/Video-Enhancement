@@ -37,20 +37,41 @@ class FRVSR():
                 # concatenate the lr_frame with the depth warped frame
                 model_input = tf.concat([lr_frame, depth], axis=-1)
                 # Implementing the model
-                pre_conv = tf.layers.conv2d(inputs=model_input, filters=64, kernel_size=[3, 3], padding="same", strides=1, name="pre_conv", kernel_initializer=tf.contrib.layers.xavier_initializer())
+                pre_conv = tf.layers.conv2d(
+                    inputs=model_input, filters=64, kernel_size=[3, 3], padding="same",
+                    strides=1, name="pre_conv", kernel_initializer=tf.contrib.layers.xavier_initializer(),
+                    activation=tf.nn.leaky_relu
+                )
                 pre_relu = tf.nn.relu(pre_conv, name="pre_relu")
                 pre = pre_relu
                 for conv_layer in range(10):
-                    conv1 = tf.layers.conv2d(inputs=pre, filters=64, kernel_size=[3, 3], padding="same", strides=1, name="conv_1_" + str(conv_layer), kernel_initializer=tf.contrib.layers.xavier_initializer())
+                    conv1 = tf.layers.conv2d(
+                        inputs=pre, filters=64, kernel_size=[3, 3], padding="same",
+                        strides=1, name="conv_1_" + str(conv_layer), kernel_initializer=tf.contrib.layers.xavier_initializer(),
+                        activation=tf.nn.leaky_relu
+                    )
                     relu = tf.nn.relu(conv1, name="relu_" + str(conv_layer))
-                    conv2 = tf.layers.conv2d(inputs=relu, filters=64, kernel_size=[3, 3], padding="same", strides=1, name="conv_2_" + str(conv_layer), kernel_initializer=tf.contrib.layers.xavier_initializer())
-                    pre = conv2
+                    conv2 = tf.layers.conv2d(
+                        inputs=relu, filters=64, kernel_size=[3, 3], padding="same",
+                        strides=1, name="conv_2_" + str(conv_layer), kernel_initializer=tf.contrib.layers.xavier_initializer(),
+                        activation=tf.nn.leaky_relu
+                    )
+                    pre = tf.math.add(pre, conv2, name='residual_add' + str(conv_layer))
 
-                transpose_1 = tf.layers.conv2d_transpose(pre, 64, [3, 3], strides=2, padding='same', name="transpose_1", kernel_initializer=tf.contrib.layers.xavier_initializer())
+                transpose_1 = tf.layers.conv2d_transpose(
+                    pre, 64, [3, 3], strides=2, padding='same', name="transpose_1",
+                    kernel_initializer=tf.contrib.layers.xavier_initializer(), activation=tf.nn.leaky_relu
+                )
                 relu_1 = tf.nn.relu(transpose_1, name="post_relu_1")
-                transpose_2 = tf.layers.conv2d_transpose(relu_1, 64, [3, 3], strides=2, padding='same', name="transpose_2", kernel_initializer=tf.contrib.layers.xavier_initializer())
+                transpose_2 = tf.layers.conv2d_transpose(
+                    relu_1, 64, [3, 3], strides=2, padding='same', name="transpose_2",
+                    kernel_initializer=tf.contrib.layers.xavier_initializer(), activation=tf.nn.leaky_relu
+                )
                 relu_2 = tf.nn.relu(transpose_2, name="post_relu_2")
-                estimate = tf.layers.conv2d(inputs=relu_2, filters=3, kernel_size=[3, 3], padding="same", strides=1, name="estimate", kernel_initializer=tf.contrib.layers.xavier_initializer())
+                estimate = tf.layers.conv2d(
+                    inputs=relu_2, filters=3, kernel_size=[3, 3], padding="same", strides=1, name="estimate",
+                    kernel_initializer=tf.contrib.layers.xavier_initializer(), activation=tf.nn.leaky_relu
+                )
                 return estimate
 
 #        reshaped_lr = tf.reshape(lr_frame_input, [batch_size, frames_len, 1, height, width, channels])
@@ -133,14 +154,14 @@ class FRVSR():
                 saver.restore(sess, check_point.model_checkpoint_path)
             else:
                 logger.debug('No checkpoint is found for FRVSR to load')
-            for i in range(2000):
+            for i in range(600):
                 predict_hr, train_loss, _ = sess.run([self.predict, self.loss, self.train_op], feed_dict={
                     self.lr_frame_input:lr_inputs,
                     self.hr_frame_input:hr_inputs,
                     self.flow_input:flow_inputs
                 })
-                print("Training loss is {:.2}".format(train_loss))
-                if i % 100 == 0:
+                print("[iteration: {}] Training loss is {:.2}".format(i, train_loss))
+                if i % 50 == 0:
                     self.plot_inference(lr_inputs[0], predict_hr[0], hr_inputs[0])
 
 
