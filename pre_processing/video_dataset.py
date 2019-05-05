@@ -50,7 +50,7 @@ class VideoDataSet():
 
 
     def skip_data(self):
-        self.current_video_reader.skip_batch(self.batch_size)
+        self.current_video_reader.skip_batch(self.frames_len)
 
 
     def skip_video(self):

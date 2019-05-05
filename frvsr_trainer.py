@@ -68,7 +68,7 @@ def build_validation_data():
 def train():
     BATCH_SIZE = 4
     FRAMES_LEN = 10
-    FRAME_TRY = 10 
+    FRAME_TRY = 10
 
     video_dataset = VideoDataSet(
         FlowModelWrapper.getInstance(),
