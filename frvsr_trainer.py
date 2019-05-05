@@ -26,13 +26,49 @@ logging.basicConfig(
         logging.StreamHandler()
 ])
 
+logger = logging.getLogger()
+
 CHECK_POINT_PATH = os.path.join(dir_path, 'check_point/frvsr/')
 DATA_SET_PATH = os.path.join(dir_path, 'data_set')
 
+
+def build_validation_data():
+    data = []
+    videos_count = 10
+    snapshot_count = 5
+    skip_size = 10
+
+    BATCH_SIZE = 4
+    FRAMES_LEN = 10
+    FRAME_TRY = 1
+
+    logger.debug('Building the validation dataset')
+
+    video_dataset = VideoDataSet(
+        FlowModelWrapper.getInstance(),
+        DATA_SET_PATH,
+        BATCH_SIZE,
+        FRAMES_LEN,
+        FRAME_TRY,
+        HIGH_IMG_SIZE,
+        SCALE_FACTOR
+    )
+
+    for video_idx in range(videos_count):
+        for snapshot in range(snapshot_count):
+            for skip in range(skip_size):
+                video_dataset.skip_data()
+            data.append(video_dataset.next_data())
+        video_dataset.skip_video()
+
+    logger.debug('Finished building the validation dataset')
+    return data
+
+
 def train():
-    BATCH_SIZE = 4 # change to 4
-    FRAMES_LEN = 10 # change to 10
-    FRAME_TRY = 10 # change to 15
+    BATCH_SIZE = 4
+    FRAMES_LEN = 10
+    FRAME_TRY = 10 
 
     video_dataset = VideoDataSet(
         FlowModelWrapper.getInstance(),
@@ -54,7 +90,7 @@ def train():
         CHECK_POINT_PATH
     )
 
-    frvsr_model.train(video_dataset)
+    frvsr_model.train(video_dataset, build_validation_data())
 
 
 def inference():

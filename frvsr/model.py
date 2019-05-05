@@ -90,7 +90,7 @@ class FRVSR():
 
         # batch_size * frames_len * hr_h * hr_w * channels
         output = tf.transpose(states, [1, 0, 2, 3, 4])
-
+        self.seq_loss = tf.reduce_sum(tf.squared_difference(output[0], hr_frame_input[0]), [1, 2, 3])
         self.loss = tf.reduce_mean(tf.reduce_sum(tf.squared_difference(output, hr_frame_input), [1, 2, 3, 4]))
         self.train_op = tf.train.AdagradOptimizer(learning_rate=1e-4).minimize(self.loss)
         self.predict = output
@@ -104,7 +104,7 @@ class FRVSR():
 
     ####
     # training
-    def train(self, data_set, epochs=2000):
+    def train(self, data_set, validation_data, epochs=2000):
         # training session
         global_step = -1
         with tf.Session() as sess:
@@ -119,11 +119,15 @@ class FRVSR():
                 logger.debug('No checkpoint is found for FRVSR to load')
             train_loss = 0
             for i in range(epochs):
-                steps = 1000
+                steps = 400
                 progress_bar = trange(steps, desc='Training', leave=True)
                 global_step = global_step + 1
                 preprocessing_time = 0
                 training_time = 0
+                logger.debug('[epoch:{:.0f}] Running the model against validation dataset'.format(i))
+                validation_loss, validation_seq = self.validate(sess, validation_data)
+                logger.debug('[epoch:{:.0f}] Validation loss is: {:.2f}'.format(i, validation_loss))
+                logger.debug('[epoch:{:.0f}] Last sequence loss is {}'.format(i, validation_seq))
                 for j in progress_bar:
                     start_time = time.time()
                     lr_frame_input, hr_frame_input, flow_input = data_set.next_data()
@@ -144,6 +148,24 @@ class FRVSR():
                 train_loss = 0
 
 
+    def validate(self, session, validation_data):
+        total_loss = 0
+        last_seq_loss = []
+        steps = len(validation_data)
+        progress_bar = trange(steps, desc='Validation', leave=True)
+        for idx in progress_bar:
+            lr_frame_input, hr_frame_input, flow_input = validation_data[idx]
+            train_loss, seq_loss = session.run([self.loss, self.seq_loss], feed_dict={
+                self.lr_frame_input:lr_frame_input,
+                self.hr_frame_input:hr_frame_input,
+                self.flow_input:flow_input
+            })
+            total_loss += train_loss
+            last_seq_loss = seq_loss
+            progress_bar.set_description('last loss: {:.2f}, Total loss: {:.2f}'.format(train_loss, total_loss))
+            progress_bar.refresh()
+        return total_loss, last_seq_loss
+
     def test_inference(self, lr_inputs, flow_inputs, hr_inputs):
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
@@ -154,15 +176,14 @@ class FRVSR():
                 saver.restore(sess, check_point.model_checkpoint_path)
             else:
                 logger.debug('No checkpoint is found for FRVSR to load')
-            for i in range(600):
-                predict_hr, train_loss, _ = sess.run([self.predict, self.loss, self.train_op], feed_dict={
-                    self.lr_frame_input:lr_inputs,
-                    self.hr_frame_input:hr_inputs,
-                    self.flow_input:flow_inputs
-                })
-                print("[iteration: {}] Training loss is {:.2}".format(i, train_loss))
-                if i % 50 == 0:
-                    self.plot_inference(lr_inputs[0], predict_hr[0], hr_inputs[0])
+            predict_hr, train_loss, seq_loss = sess.run([self.predict, self.loss, self.seq_loss], feed_dict={
+                self.lr_frame_input:lr_inputs,
+                self.hr_frame_input:hr_inputs,
+                self.flow_input:flow_inputs
+            })
+            print("loss is {:.2}".format(train_loss))
+            print("Sequence loss is {}".format(seq_loss))
+            self.plot_inference(lr_inputs[0], predict_hr[0], hr_inputs[0])
 
 
     def plot_inference(self, lr, predict_hr, hr):

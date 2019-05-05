@@ -49,6 +49,18 @@ class VideoDataSet():
         return lr_batches, hr_batches, flow_batches
 
 
+    def skip_data(self):
+        self.current_video_reader.skip_batch(self.batch_size)
+
+
+    def skip_video(self):
+        self.video_index = (self.video_index + 1) % len(self.videos)
+        self.current_video_reader = VideoReader(self.videos[self.video_index])
+        self.current_frames = self.current_video_reader.read_batch(self.frames_len)
+        self.current_down_scaled = down_scale_batch(self.current_frames, 2)
+        self.frame_try = 0
+
+
     def update_current_frames_if_needed(self):
         if self.frame_try == self.frame_max_try:
             self.frame_try = 0
