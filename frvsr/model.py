@@ -90,8 +90,8 @@ class FRVSR():
 
         # batch_size * frames_len * hr_h * hr_w * channels
         output = tf.transpose(states, [1, 0, 2, 3, 4])
-        self.seq_loss = tf.reduce_sum(tf.squared_difference(output[0], hr_frame_input[0]), [1, 2, 3])
-        self.loss = tf.reduce_mean(tf.reduce_sum(tf.squared_difference(output, hr_frame_input), [1, 2, 3, 4]))
+        self.seq_loss = tf.reduce_mean(tf.squared_difference(output[0], hr_frame_input[0]), [1, 2, 3])
+        self.loss = tf.reduce_mean(tf.reduce_mean(tf.squared_difference(output, hr_frame_input), [1, 2, 3, 4]))
         self.train_op = tf.train.AdagradOptimizer(learning_rate=1e-4).minimize(self.loss)
         self.predict = output
         self.check_point_path = check_point_path
@@ -119,14 +119,13 @@ class FRVSR():
                 logger.debug('No checkpoint is found for FRVSR to load')
             train_loss = 0
             for i in range(epochs):
-                steps = 400
+                steps = 1000
                 progress_bar = trange(steps, desc='Training', leave=True)
                 global_step = global_step + 1
                 preprocessing_time = 0
                 training_time = 0
-                logger.debug('[epoch:{:.0f}] Running the model against validation dataset'.format(i))
                 validation_loss, validation_seq = self.validate(sess, validation_data)
-                logger.debug('[epoch:{:.0f}] Validation loss is: {:.2f}'.format(i, validation_loss))
+                logger.debug('[epoch:{:.0f}] Validation loss is: {:.8f}'.format(i, validation_loss))
                 logger.debug('[epoch:{:.0f}] Last sequence loss is {}'.format(i, validation_seq))
                 for j in progress_bar:
                     start_time = time.time()
@@ -140,10 +139,9 @@ class FRVSR():
                     preprocessing_time += after_preprocessing_time - start_time
                     training_time += time.time() - after_preprocessing_time
                     train_loss += train_loss_
-                    progress_bar.set_description('last loss : {:.2f}, average loss: {:.2f}'.format(train_loss_, train_loss/(j + 1)))
+                    progress_bar.set_description('last loss : {:.8f}, average loss: {:.8f}'.format(train_loss_, train_loss/(j + 1)))
                     progress_bar.refresh()
-                logger.debug('[epoch:{:.0f}] Finished the current Epoch with average loss : {:.2f}'.format(i, train_loss/steps))
-                logger.debug('[epoch:{:.0f}] Training time: {}, Preprocessing time: {:.2f}'.format(i, training_time, preprocessing_time))
+                logger.debug('[epoch:{:.0f}] Finished the current Epoch with average loss : {:.8f}'.format(i, train_loss/steps))
                 saver.save(sess, self.check_point_path + 'frvsr.ckpt', global_step=global_step)
                 train_loss = 0
 
@@ -162,7 +160,7 @@ class FRVSR():
             })
             total_loss += train_loss
             last_seq_loss = seq_loss
-            progress_bar.set_description('last loss: {:.2f}, Total loss: {:.2f}'.format(train_loss, total_loss))
+            progress_bar.set_description('last loss: {:.8f}, Total loss: {:.8f}'.format(train_loss, total_loss))
             progress_bar.refresh()
         return total_loss, last_seq_loss
 
