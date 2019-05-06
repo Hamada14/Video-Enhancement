@@ -117,7 +117,7 @@ class RecurrentSRGAN():
     def train_initial_generator(self, video_set):
         lr_test, hr_test, flow_test = self.sample_batch_for_test(video_set)
         ###========================== RESTORE MODEL =============================###
-        config = tf.ConfigProto(tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)
+        config = tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)
         config.graph_options.optimizer_options.global_jit_level = tf.OptimizerOptions.OFF
         sess = tf.Session(config=config)
         tl.layers.initialize_global_variables(sess)
