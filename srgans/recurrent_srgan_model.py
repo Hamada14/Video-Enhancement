@@ -18,8 +18,6 @@ class RecurrentSRGAN():
 
     def __init__(self):
 
-
-        with tf.device("/gpu:0"):
             self.batch_size = config.TRAIN.batch_size
             self.lr_init = config.TRAIN.lr_init
             self.beta1 = config.TRAIN.beta1
