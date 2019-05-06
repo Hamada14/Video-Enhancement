@@ -1273,7 +1273,7 @@ class Conv1dLayer(Layer):
         stride = 1,
         dilation_rate = 1,
         padding='SAME',
-        use_cudnn_on_gpu=True,
+        use_cudnn_on_gpu=None,
         data_format='NWC',
         W_init = tf.truncated_normal_initializer(stddev=0.02),
         b_init = tf.constant_initializer(value=0.0),
@@ -1386,7 +1386,7 @@ class Conv2dLayer(Layer):
         b_init = tf.constant_initializer(value=0.0),
         W_init_args = {},
         b_init_args = {},
-        use_cudnn_on_gpu = True,
+        use_cudnn_on_gpu = None,
         data_format = None,
         name ='cnn_layer',
     ):
@@ -1977,7 +1977,7 @@ class DeformableConv2dLayer(Layer):
         self.all_params.extend([W, b])
 
 def AtrousConv1dLayer(net, n_filter=32, filter_size=2, stride=1, dilation=1, act=None,
-        padding='SAME', use_cudnn_on_gpu=True,data_format='NWC',
+        padding='SAME', use_cudnn_on_gpu=None,data_format='NWC',
         W_init = tf.truncated_normal_initializer(stddev=0.02),
         b_init = tf.constant_initializer(value=0.0),
         W_init_args = {}, b_init_args = {},name ='conv1d',):
@@ -2206,7 +2206,7 @@ def deconv2d_bilinear_upsampling_initializer(shape):
 
 ## Convolutional layer (Simplified)
 def Conv1d(net, n_filter=32, filter_size=5, stride=1, dilation_rate=1, act=None,
-        padding='SAME', use_cudnn_on_gpu=True, data_format="NWC",
+        padding='SAME', use_cudnn_on_gpu=None, data_format="NWC",
         W_init = tf.truncated_normal_initializer(stddev=0.02),
         b_init = tf.constant_initializer(value=0.0),
         W_init_args = {}, b_init_args = {}, name ='conv1d',):
@@ -2259,7 +2259,7 @@ def Conv1d(net, n_filter=32, filter_size=5, stride=1, dilation_rate=1, act=None,
 
 def Conv2d(net, n_filter=32, filter_size=(3, 3), strides=(1, 1), act = None,
         padding='SAME', W_init = tf.truncated_normal_initializer(stddev=0.02), b_init = tf.constant_initializer(value=0.0),
-        W_init_args = {}, b_init_args = {}, use_cudnn_on_gpu = True, data_format = None,name ='conv2d',):
+        W_init_args = {}, b_init_args = {}, use_cudnn_on_gpu = None, data_format = None,name ='conv2d',):
     """Wrapper for :class:`Conv2dLayer`, if you don't understand how to use :class:`Conv2dLayer`, this function may be easier.
 
     Parameters
