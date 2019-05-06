@@ -14,7 +14,7 @@ from srgans.tensorlayer.layers import *
 
 
 def SRGAN_generator(raw_frame, wrapped_frame,  reuse=False):
-    w_init = tf.random_normal_initializer(stddev=0.02)
+    w_init = None # tf.random_normal_initializer(stddev=0.02)
     b_init = None  # tf.constant_initializer(value=0.0)
     with tf.variable_scope("SRGAN_g", reuse=reuse) as vs:
         set_name_reuse(reuse)
@@ -24,7 +24,7 @@ def SRGAN_generator(raw_frame, wrapped_frame,  reuse=False):
         n = Conv2d(n, 64, (3, 3), (1, 1), act=tf.nn.relu, padding='SAME', W_init=w_init, name='n64s1/c')
 
         # RS blocks of
-        for i in range(16):
+        for i in range(10):
             nn = Conv2d(n, 64, (3, 3), (1, 1), act=tf.nn.relu, padding='SAME', W_init=w_init, b_init=b_init, name='n64s1/c1/%s' % i)
             nn = Conv2d(nn, 64, (3, 3), (1, 1), act=None, padding='SAME', W_init=w_init, b_init=b_init, name='n64s1/c2/%s' % i)
             nn = ElementwiseLayer([n, nn], tf.add, 'b_residual_add/%s' % i)
@@ -45,7 +45,7 @@ def SRGAN_generator(raw_frame, wrapped_frame,  reuse=False):
 
 
 def SRGAN_discriminator(input_frames, is_train=True, reuse=False):
-    w_init = tf.random_normal_initializer(stddev=0.02)
+    w_init = None #tf.random_normal_initializer(stddev=0.02)
     b_init = None  # tf.constant_initializer(value=0.0)
     gamma_init = tf.random_normal_initializer(1., 0.02)
     df_dim = 64

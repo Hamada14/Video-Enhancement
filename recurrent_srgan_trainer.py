@@ -8,8 +8,8 @@ from srgans.config import config, log_config
 
 
 
-BATCH_SIZE = 2
-FRAMES_LEN = 10
+BATCH_SIZE = config.TRAIN.batch_size
+FRAMES_LEN = config.TRAIN.time_steps
 FRAME_TRY = 3
 
 
@@ -28,5 +28,6 @@ video_dataset = VideoDataSet(
 )
 
 srgan_model = RecurrentSRGAN()
-#srgan_model.train_initial_generator(video_dataset)
+#srgan_model.sample_batch_for_test(video_dataset)
+srgan_model.train_initial_generator(video_dataset)
 srgan_model.train(video_dataset)
