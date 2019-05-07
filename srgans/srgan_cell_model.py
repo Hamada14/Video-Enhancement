@@ -32,13 +32,14 @@ def SRGAN_generator(raw_frame, wrapped_frame,  reuse=False):
 
         # Upscaling
         for i in range(2):
-            nn = Conv2d(n, 256, (3, 3), (1, 1), act=None, padding='SAME', W_init=w_init, b_init=b_init, name='n256s1/c3/%s' % i)
-            nn = tf.nn.depth_to_space(nn.outputs, 2)
-            nn = tf.nn.relu(nn)
-            n = InputLayer(nn, name = 'after_depth_space/%s' % i)
+            nn = tf.image.resize_nearest_neighbor(n.outputs, [128*(i+1),128*(i+1)])
+            nn = InputLayer(nn, name = 'after_upscaling/%s' % i)           
+            nn = Conv2d(nn, 256, (3, 3), (1, 1), act=None, padding='SAME', W_init=w_init, b_init=b_init, name='n256s1/c3/%s' % i)
+            nn = tf.nn.relu(nn.outputs)
+            n = InputLayer(nn, name = 'after_relu/%s' % i)
         n = Conv2d(n, 3, (3, 3), (1, 1), act=None, padding='SAME',   W_init=w_init, b_init=b_init, name='n3s1/c4')
 
-        temp = tf.image.resize_bicubic(raw_frame,[256,256])
+        temp = tf.image.resize_nearest_neighbor(raw_frame,[256,256])
         temp = InputLayer(temp, name = 'raw_frame_After_bicubic')
         n = ElementwiseLayer([n, temp], tf.add, 'b_residual_add')
     return n, n.outputs

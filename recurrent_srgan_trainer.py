@@ -30,4 +30,4 @@ video_dataset = VideoDataSet(
 srgan_model = RecurrentSRGAN()
 #srgan_model.sample_batch_for_test(video_dataset)
 srgan_model.train_initial_generator(video_dataset)
-srgan_model.train(video_dataset)
+#srgan_model.train(video_dataset)
