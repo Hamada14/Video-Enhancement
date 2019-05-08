@@ -15,13 +15,13 @@ config.Model.low_width = 64
 config.Model.low_height = 64
 
 ## Adam
-config.TRAIN.data_points = 300,000
-config.TRAIN.batch_size = 8
+config.TRAIN.data_points = 4
+config.TRAIN.batch_size = 4
 config.TRAIN.lr_init = 1e-4
 config.TRAIN.beta1 = 0.9
 
 ## initialize G
-config.TRAIN.n_epoch_init = 2
+config.TRAIN.n_epoch_init = 30
 config.TRAIN.lr_decay_init = 0.1
 config.TRAIN.decay_every_init = int(config.TRAIN.n_epoch_init / 2)
 

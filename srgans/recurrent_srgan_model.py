@@ -10,8 +10,7 @@ import tensorlayer as tl
 import logging
 from srgans.srgan_cell_model import *
 from srgans.config import config, log_config
-
-
+from lpipsTensorflow import lpips_tf
 
 # you can configure the model hyper parameters by editing config.py
 class RecurrentSRGAN():
@@ -163,6 +162,9 @@ class RecurrentSRGAN():
                 print("[*] save images")
                  # for i in range(len(out[0])):
                 tl.vis.save_images(out, [self.ni, self.ni], self.save_dir_ginit + '/train_%d.png' % epoch)
+                #lpips metric
+                lpips_dist = self.evaluate_with_lpips_metric(self.output_images,hr_test)
+                logging.info("Lpips Metric: %.8f" % lpips_dist)
                  ## save model
             if (epoch != 0) and (epoch % 10 == 0):
                  tl.files.save_npz(self.net_g.all_params,
@@ -255,12 +257,10 @@ class RecurrentSRGAN():
 
       return lr_frame_input, hr_frame_input,flow_input
 #
-# def evaluate():
-#     ## create folders to save result images
-#     save_dir = "samples/{}".format(tl.global_flag['mode'])
-#     tl.files.exists_or_mkdir(save_dir)
-#     checkpoint_dir = "checkpoint"
-#     ##load validation video list
-#     valid_video_list = sorted(tl.files.load_file_list(path=config.TRAIN.videos_path, regx='.*.mp4', printable=False))
-#
-#
+    def evaluate_with_lpips_metric(self, estimated_hr, hr):
+        session = tf.Session()
+        image0_ph = tf.placeholder(tf.float32)
+        image1_ph = tf.placeholder(tf.float32)
+        lpips_fn = session.make_callable(lpips_tf.lpips(image0_ph,image1_ph),[image0_ph,image1_ph])
+        distance = lpips_fn(hr, estimated_hr)
+        return distance
