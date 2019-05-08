@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="729dcf01-1f98-40d1-bcec-c6f253c087d6" name="Default Changelist" comment="" />
+    <list default="true" id="729dcf01-1f98-40d1-bcec-c6f253c087d6" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/srgans/lpipsTensorflow" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/srgans/recurrent_srgan_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/srgans/recurrent_srgan_model.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,35 +45,6 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lpipsTensorflow/lpips_tf.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-589">
-              <caret line="22" column="47" selection-start-line="22" selection-start-column="47" selection-end-line="22" selection-end-column="47" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lpipsTensorflow/setup.py">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lpipsTensorflow/test_network.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="29" column="4" selection-start-line="29" selection-start-column="4" selection-end-line="29" selection-end-column="42" />
-              <folding>
-                <element signature="e#0#15#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pre_processing/video_reader.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="90">
@@ -93,11 +68,20 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/srgans/recurrent_srgan_model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="111">
-              <caret line="155" column="22" selection-start-line="155" selection-start-column="16" selection-end-line="155" selection-end-column="22" />
+            <state relative-caret-position="285">
+              <caret line="19" column="40" selection-start-line="19" selection-start-column="40" selection-end-line="19" selection-end-column="40" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/srgans/srgan_cell_model.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-649">
+              <caret line="15" column="19" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -150,6 +134,7 @@
         <option value="$PROJECT_DIR$/recurrent_srgan_trainer.py" />
         <option value="$PROJECT_DIR$/pre_processing/recurrent_srgan_model.py" />
         <option value="$PROJECT_DIR$/srgans/config.py" />
+        <option value="$PROJECT_DIR$/srgans/lpipsTensorflow/lpips_tf.py" />
         <option value="$PROJECT_DIR$/srgans/recurrent_srgan_model.py" />
       </list>
     </option>
@@ -177,7 +162,7 @@
             <path>
               <item name="Video-Enhancement" type="b2602c69:ProjectViewProjectNode" />
               <item name="Video-Enhancement" type="462c0819:PsiDirectoryNode" />
-              <item name="lpipsTensorflow" type="462c0819:PsiDirectoryNode" />
+              <item name="srgans" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -236,7 +221,7 @@
     <frame x="67" y="27" width="1299" height="741" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.15595612" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.29075235" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -381,10 +366,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/srgans/lpipsTensorflow/lpips_tf.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" selection-start-line="8" selection-end-line="8" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/srgans/srgan_cell_model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-649">
+          <caret line="15" column="19" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/srgans/recurrent_srgan_model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="111">
-          <caret line="155" column="22" selection-start-line="155" selection-start-column="16" selection-end-line="155" selection-end-column="22" />
+        <state relative-caret-position="285">
+          <caret line="19" column="40" selection-start-line="19" selection-start-column="40" selection-end-line="19" selection-end-column="40" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
           </folding>

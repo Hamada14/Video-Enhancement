@@ -10,7 +10,7 @@ import tensorlayer as tl
 import logging
 from srgans.srgan_cell_model import *
 from srgans.config import config, log_config
-from lpipsTensorflow import lpips_tf
+from srgans.lpipsMetric.lpips_tf import *
 
 # you can configure the model hyper parameters by editing config.py
 class RecurrentSRGAN():
@@ -261,6 +261,6 @@ class RecurrentSRGAN():
         session = tf.Session()
         image0_ph = tf.placeholder(tf.float32)
         image1_ph = tf.placeholder(tf.float32)
-        lpips_fn = session.make_callable(lpips_tf.lpips(image0_ph,image1_ph),[image0_ph,image1_ph])
+        lpips_fn = session.make_callable(lpips(image0_ph,image1_ph),[image0_ph,image1_ph])
         distance = lpips_fn(hr, estimated_hr)
         return distance
