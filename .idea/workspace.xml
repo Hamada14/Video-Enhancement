@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="729dcf01-1f98-40d1-bcec-c6f253c087d6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/srgans/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/srgans/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/srgans/recurrent_srgan_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/srgans/recurrent_srgan_model.py" afterDir="false" />
-    </list>
+    <list default="true" id="729dcf01-1f98-40d1-bcec-c6f253c087d6" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,8 +93,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/srgans/recurrent_srgan_model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="497">
-              <caret line="168" column="50" lean-forward="true" selection-start-line="168" selection-start-column="50" selection-end-line="168" selection-end-column="50" />
+            <state relative-caret-position="111">
+              <caret line="155" column="22" selection-start-line="155" selection-start-column="16" selection-end-line="155" selection-end-column="22" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
@@ -387,8 +383,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/srgans/recurrent_srgan_model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="497">
-          <caret line="168" column="50" lean-forward="true" selection-start-line="168" selection-start-column="50" selection-end-line="168" selection-end-column="50" />
+        <state relative-caret-position="111">
+          <caret line="155" column="22" selection-start-line="155" selection-start-column="16" selection-end-line="155" selection-end-column="22" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
           </folding>
