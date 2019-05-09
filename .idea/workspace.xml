@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="729dcf01-1f98-40d1-bcec-c6f253c087d6" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/srgans/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/srgans/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/srgans/recurrent_srgan_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/srgans/recurrent_srgan_model.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -32,11 +30,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/srgans/config.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="17" column="24" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="24" />
+            <state relative-caret-position="393">
+              <caret line="30" column="43" lean-forward="true" selection-start-line="30" selection-start-column="43" selection-end-line="30" selection-end-column="43" />
               <folding>
                 <element signature="e#0#38#0" expanded="true" />
               </folding>
@@ -68,11 +66,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/srgans/recurrent_srgan_model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="244">
-              <caret line="172" column="31" lean-forward="true" selection-end-line="266" />
+            <state relative-caret-position="2087">
+              <caret line="179" column="67" selection-start-line="179" selection-start-column="67" selection-end-line="179" selection-end-column="67" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
@@ -144,8 +142,8 @@
         <option value="$PROJECT_DIR$/recurrent_srgan_trainer.py" />
         <option value="$PROJECT_DIR$/pre_processing/recurrent_srgan_model.py" />
         <option value="$PROJECT_DIR$/srgans/lpipsTensorflow/lpips_tf.py" />
-        <option value="$PROJECT_DIR$/srgans/config.py" />
         <option value="$PROJECT_DIR$/srgans/recurrent_srgan_model.py" />
+        <option value="$PROJECT_DIR$/srgans/config.py" />
       </list>
     </option>
   </component>
@@ -348,22 +346,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/srgans/config.py">
+    <entry file="file://$PROJECT_DIR$/srgans/recurrent_srgan_model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="17" column="24" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="24" />
+        <state relative-caret-position="2087">
+          <caret line="179" column="67" selection-start-line="179" selection-start-column="67" selection-end-line="179" selection-end-column="67" />
           <folding>
-            <element signature="e#0#38#0" expanded="true" />
+            <element signature="e#0#37#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/srgans/recurrent_srgan_model.py">
+    <entry file="file://$PROJECT_DIR$/srgans/config.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="244">
-          <caret line="172" column="31" lean-forward="true" selection-end-line="266" />
+        <state relative-caret-position="393">
+          <caret line="30" column="43" lean-forward="true" selection-start-line="30" selection-start-column="43" selection-end-line="30" selection-end-column="43" />
           <folding>
-            <element signature="e#0#37#0" expanded="true" />
+            <element signature="e#0#38#0" expanded="true" />
           </folding>
         </state>
       </provider>
