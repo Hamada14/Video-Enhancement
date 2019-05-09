@@ -250,10 +250,10 @@ class RecurrentSRGAN():
 
       ## use first `batch_size` of train set to have a quick test during training
       lr_frame_input, hr_frame_input, flow_input = video_set.next_data()
-      tl.vis.save_images(np.array(lr_frame_input[:-1]),[self.ni, self.ni], self.save_dir_ginit + '/_train_sample_96.png')
-      tl.vis.save_images(np.array(hr_frame_input[:-1]), [self.ni, self.ni], self.save_dir_ginit + '/_train_sample_384.png')
-      tl.vis.save_images(np.array(lr_frame_input[:-1]), [self.ni, self.ni], self.save_dir_gan + '/_train_sample_96.png')
-      tl.vis.save_images(np.array(hr_frame_input[:-1]), [self.ni, self.ni], self.save_dir_gan + '/_train_sample_384.png')
+      tl.vis.save_images(np.array(lr_frame_input)[:,-1],[self.ni, self.ni], self.save_dir_ginit + '/_train_sample_96.png')
+      tl.vis.save_images(np.array(hr_frame_input)[:,-1], [self.ni, self.ni], self.save_dir_ginit + '/_train_sample_384.png')
+      tl.vis.save_images(np.array(lr_frame_input)[:,-1], [self.ni, self.ni], self.save_dir_gan + '/_train_sample_96.png')
+      tl.vis.save_images(np.array(hr_frame_input)[:,-1], [self.ni, self.ni], self.save_dir_gan + '/_train_sample_384.png')
 
       return lr_frame_input, hr_frame_input,flow_input
 #

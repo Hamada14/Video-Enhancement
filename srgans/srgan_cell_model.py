@@ -26,7 +26,7 @@ def SRGAN_generator(raw_frame, wrapped_frame,  reuse=False):
         # RS blocks of
         for i in range(10):
             nn = Conv2d(n, 64, (3, 3), (1, 1), act=tf.nn.relu, padding='SAME', W_init=w_init, b_init=b_init, name='n64s1/c1/%s' % i)
-            nn = Conv2d(nn, 64, (3, 3), (1, 1), act=tf.nn.relu, padding='SAME', W_init=w_init, b_init=b_init, name='n64s1/c2/%s' % i)
+            nn = Conv2d(nn, 64, (3, 3), (1, 1), act=None, padding='SAME', W_init=w_init, b_init=b_init, name='n64s1/c2/%s' % i)
             nn = ElementwiseLayer([n, nn], tf.add, 'b_residual_add/%s' % i)
             n = nn
 
@@ -34,7 +34,7 @@ def SRGAN_generator(raw_frame, wrapped_frame,  reuse=False):
         for i in range(2):
             nn = tf.image.resize_nearest_neighbor(n.outputs, [128*(i+1),128*(i+1)])
             nn = InputLayer(nn, name = 'after_upscaling/%s' % i)           
-            nn = Conv2d(nn, 256, (3, 3), (1, 1), act=tf.nn.relu, padding='SAME', W_init=w_init, b_init=b_init, name='n256s1/c3/%s' % i)
+            nn = Conv2d(nn, 256, (3, 3), (1, 1), act=None, padding='SAME', W_init=w_init, b_init=b_init, name='n256s1/c3/%s' % i)
             nn = tf.nn.relu(nn.outputs)
             n = InputLayer(nn, name = 'after_relu/%s' % i)
         n = Conv2d(n, 3, (3, 3), (1, 1), act=None, padding='SAME',   W_init=w_init, b_init=b_init, name='n3s1/c4')
