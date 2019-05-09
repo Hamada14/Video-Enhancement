@@ -23,7 +23,7 @@ class RecurrentSRGAN():
             self.lr_init = config.TRAIN.lr_init
             self.beta1 = config.TRAIN.beta1
             self.time_steps = config.TRAIN.time_steps
-            self.ni = int(np.sqrt(self.time_steps)) + 1
+            self.ni = int(np.sqrt(self.batch_size))
             self.high_width = config.Model.high_width
             self.high_height = config.Model.high_height
             self.low_width = config.Model.low_width
@@ -57,6 +57,7 @@ class RecurrentSRGAN():
             self.unrolled_mse_total_loss = tf.Variable(0.0, name="mse_unrolled_loss")
             self.unrolled_tloss_total_loss = tf.Variable(0.0, name="t_unrolled_loss")
             self.output_list = []
+
             #Unrolling the GAN model for t steps
             # for t in range(self.time_steps):
             for t in range(self.time_steps):
@@ -160,11 +161,10 @@ class RecurrentSRGAN():
             if (epoch % 10 == 0):
                 out = sess.run( self.output_images, {self.t_image: lr_test, self.t_target_image: hr_test, self.raw_optical_flow: flow_test})
                 print("[*] save images")
-                for i in range(self.batch_size):
-                    tl.vis.save_images(out[i], [self.ni, self.ni], self.save_dir_ginit + '/train_step%d%d.png' % (epoch,i))
+                tl.vis.save_images(out[-1], [self.ni, self.ni], self.save_dir_ginit + '/train_last_step_%d.png' % (epoch))
                     #lpips metric
-                    lpips_dist = self.evaluate_with_lpips_metric(out,hr_test)
-                    #logging.info("Lpips Metric: %.8f" % lpips_dist)
+                lpips_dist = self.evaluate_with_lpips_metric(out,hr_test)
+                logging.info("Lpips Metric %s" % (str(lpips_dist)[1:-1]))
                  ## save model
             if (epoch != 0) and (epoch % 10 == 0):
                  tl.files.save_npz(self.net_g.all_params,
@@ -250,10 +250,10 @@ class RecurrentSRGAN():
 
       ## use first `batch_size` of train set to have a quick test during training
       lr_frame_input, hr_frame_input, flow_input = video_set.next_data()
-      tl.vis.save_images(np.array(lr_frame_input[0]),[self.ni, self.ni], self.save_dir_ginit + '/_train_sample_96.png')
-      tl.vis.save_images(np.array(hr_frame_input[0]), [self.ni, self.ni], self.save_dir_ginit + '/_train_sample_384.png')
-      tl.vis.save_images(np.array(lr_frame_input[0]), [self.ni, self.ni], self.save_dir_gan + '/_train_sample_96.png')
-      tl.vis.save_images(np.array(hr_frame_input[0]), [self.ni, self.ni], self.save_dir_gan + '/_train_sample_384.png')
+      tl.vis.save_images(np.array(lr_frame_input[:-1]),[self.ni, self.ni], self.save_dir_ginit + '/_train_sample_96.png')
+      tl.vis.save_images(np.array(hr_frame_input[:-1]), [self.ni, self.ni], self.save_dir_ginit + '/_train_sample_384.png')
+      tl.vis.save_images(np.array(lr_frame_input[:-1]), [self.ni, self.ni], self.save_dir_gan + '/_train_sample_96.png')
+      tl.vis.save_images(np.array(hr_frame_input[:-1]), [self.ni, self.ni], self.save_dir_gan + '/_train_sample_384.png')
 
       return lr_frame_input, hr_frame_input,flow_input
 #

@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="729dcf01-1f98-40d1-bcec-c6f253c087d6" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/recurrent_srgan_trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/recurrent_srgan_trainer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/srgans/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/srgans/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/srgans/recurrent_srgan_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/srgans/recurrent_srgan_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/srgans/srgan_cell_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/srgans/srgan_cell_model.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,20 +24,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/recurrent_srgan_trainer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="390">
-              <caret line="32" column="33" selection-start-line="32" selection-start-column="18" selection-end-line="32" selection-end-column="33" />
+            <state relative-caret-position="360">
+              <caret line="30" column="17" selection-start-line="30" selection-start-column="17" selection-end-line="30" selection-end-column="17" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/srgans/config.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="393">
-              <caret line="30" column="43" lean-forward="true" selection-start-line="30" selection-start-column="43" selection-end-line="30" selection-end-column="43" />
+            <state relative-caret-position="78">
+              <caret line="9" column="28" selection-start-line="9" selection-start-column="26" selection-end-line="9" selection-end-column="28" />
               <folding>
                 <element signature="e#0#38#0" expanded="true" />
               </folding>
@@ -57,7 +60,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pre_processing/video_dataset.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
+            <state relative-caret-position="180">
               <caret line="12" selection-start-line="12" selection-end-line="12" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
@@ -69,8 +72,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/srgans/recurrent_srgan_model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2087">
-              <caret line="179" column="67" selection-start-line="179" selection-start-column="67" selection-end-line="179" selection-end-column="67" />
+            <state relative-caret-position="-1007">
+              <caret line="171" lean-forward="true" selection-start-line="171" selection-end-line="171" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
@@ -81,8 +84,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/srgans/srgan_cell_model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="15" column="19" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="19" />
+            <state relative-caret-position="353">
+              <caret line="51" column="15" lean-forward="true" selection-start-line="51" selection-start-column="15" selection-end-line="51" selection-end-column="15" />
             </state>
           </provider>
         </entry>
@@ -117,7 +120,9 @@
       <find>out</find>
       <find>output_images</find>
       <find>output_list</find>
+      <find>None</find>
       <find>output_image</find>
+      <find>self.ni</find>
     </findStrings>
     <replaceStrings>
       <replace>logging</replace>
@@ -139,11 +144,12 @@
         <option value="$PROJECT_DIR$/SRGANs/recurrent_srgan_model.py" />
         <option value="$PROJECT_DIR$/SRGANs/recurrent_srgan_trainer.py" />
         <option value="$PROJECT_DIR$/SRGANs/config.py" />
-        <option value="$PROJECT_DIR$/recurrent_srgan_trainer.py" />
         <option value="$PROJECT_DIR$/pre_processing/recurrent_srgan_model.py" />
         <option value="$PROJECT_DIR$/srgans/lpipsTensorflow/lpips_tf.py" />
-        <option value="$PROJECT_DIR$/srgans/recurrent_srgan_model.py" />
         <option value="$PROJECT_DIR$/srgans/config.py" />
+        <option value="$PROJECT_DIR$/srgans/srgan_cell_model.py" />
+        <option value="$PROJECT_DIR$/srgans/recurrent_srgan_model.py" />
+        <option value="$PROJECT_DIR$/recurrent_srgan_trainer.py" />
       </list>
     </option>
   </component>
@@ -312,13 +318,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/recurrent_srgan_trainer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="32" column="33" selection-start-line="32" selection-start-column="18" selection-end-line="32" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pre_processing/video_reader.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -329,9 +328,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/srgans/srgan_cell_model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="353">
+          <caret line="51" column="15" lean-forward="true" selection-start-line="51" selection-start-column="15" selection-end-line="51" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/pre_processing/video_dataset.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
+        <state relative-caret-position="180">
           <caret line="12" selection-start-line="12" selection-end-line="12" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
@@ -339,17 +345,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/srgans/srgan_cell_model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="15" column="19" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/srgans/recurrent_srgan_model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2087">
-          <caret line="179" column="67" selection-start-line="179" selection-start-column="67" selection-end-line="179" selection-end-column="67" />
+        <state relative-caret-position="-1007">
+          <caret line="171" lean-forward="true" selection-start-line="171" selection-end-line="171" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
           </folding>
@@ -358,11 +357,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/srgans/config.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="393">
-          <caret line="30" column="43" lean-forward="true" selection-start-line="30" selection-start-column="43" selection-end-line="30" selection-end-column="43" />
+        <state relative-caret-position="78">
+          <caret line="9" column="28" selection-start-line="9" selection-start-column="26" selection-end-line="9" selection-end-column="28" />
           <folding>
             <element signature="e#0#38#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/recurrent_srgan_trainer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="30" column="17" selection-start-line="30" selection-start-column="17" selection-end-line="30" selection-end-column="17" />
         </state>
       </provider>
     </entry>
