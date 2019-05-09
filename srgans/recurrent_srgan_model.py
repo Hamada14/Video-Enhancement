@@ -158,19 +158,19 @@ class RecurrentSRGAN():
                 logging.info("[*] Epoch: [%2d/%2d] time: %4.4fs, mse: %.8f" % (
                     epoch, n_epoch_init, time.time() - epoch_time, total_mse_loss / n_iter))
             ## quick evaluation on train set
-            if (idx % 50 == 0):
-                out = sess.run( self.output_images, {self.t_image: lr_test, self.t_target_image: hr_test, self.raw_optical_flow: flow_test})
-                print("[*] save images")#last time step of each batch
-                tl.vis.save_images(out[-1], [self.ni, self.ni], self.save_dir_ginit + '/train_%d.png' % (epoch))
-                #lpips metric
-                #normalized [0,1]
-                out = (out - np.min(out)) / np.ptp(out)
-                lpips_dist = self.evaluate_with_lpips_metric(out,hr_test)
-                logging.info("Lpips Metric %s" % (str(lpips_dist)[1:-1]))
+                if (idx % 50 == 0):
+                    out = sess.run( self.output_images, {self.t_image: lr_test, self.t_target_image: hr_test, self.raw_optical_flow: flow_test})
+                    print("[*] save images")#last time step of each batch
+                    tl.vis.save_images(out[-1], [self.ni, self.ni], self.save_dir_ginit + '/train_%d.png' % (epoch))
+                    #lpips metric
+                    #normalized [0,1]
+                    out = (out - np.min(out)) / np.ptp(out)
+                    lpips_dist = self.evaluate_with_lpips_metric(out,hr_test)
+                    logging.info("Lpips Metric %s" % (str(lpips_dist)[1:-1]))
                  ## save model
-            if (idx != 0) and (idx % 50 == 0):
-                 tl.files.save_npz(self.net_g.all_params,
-                                   name=self.checkpoint_dir + '/g_{}_init.npz'.format(tl.global_flag['mode']), sess=sess)
+                if (idx != 0) and (idx % 50 == 0):
+                     tl.files.save_npz(self.net_g.all_params,
+                                       name=self.checkpoint_dir + '/g_{}_init.npz'.format(tl.global_flag['mode']), sess=sess)
 
     def train(self, video_set):
 
@@ -234,22 +234,22 @@ class RecurrentSRGAN():
                         epoch, n_epoch, time.time() - epoch_time, total_d_loss / n_iter,
                         total_g_loss / n_iter))
 
-            if (idx % 50 == 0):
-                out = sess.run( self.output_images, {self.t_image: lr_test, self.t_target_image: hr_test, self.raw_optical_flow: flow_test})
-                print("[*] save images")#last step of each batch
-                tl.vis.save_images(out[-1], [self.ni, self.ni], self.save_dir_gan + '/train_%d.png' % epoch)
-                # lpips metric
-                # normalized [0,1]
-                out = (out - np.min(out)) / np.ptp(out)
-                lpips_dist = self.evaluate_with_lpips_metric(out, hr_test)
-                logging.info("Lpips Metric %s" % (str(lpips_dist)[1:-1]))
-                 ## save model
-        # save model
-            if (idx != 0) and (idx % 50 == 0):
-                tl.files.save_npz(self.net_g.all_params, name=self.checkpoint_dir + '/g_{}.npz'.format(tl.global_flag['mode']),
-                                  sess=sess)
-                tl.files.save_npz(self.net_d.all_params, name=self.checkpoint_dir + '/d_{}.npz'.format(tl.global_flag['mode']),
-                                  sess=sess)
+                    if (idx % 50 == 0):
+                        out = sess.run( self.output_images, {self.t_image: lr_test, self.t_target_image: hr_test, self.raw_optical_flow: flow_test})
+                        print("[*] save images")#last step of each batch
+                        tl.vis.save_images(out[-1], [self.ni, self.ni], self.save_dir_gan + '/train_%d.png' % epoch)
+                        # lpips metric
+                        # normalized [0,1]
+                        out = (out - np.min(out)) / np.ptp(out)
+                        lpips_dist = self.evaluate_with_lpips_metric(out, hr_test)
+                        logging.info("Lpips Metric %s" % (str(lpips_dist)[1:-1]))
+
+                        #save model
+                    if (idx != 0) and (idx % 50 == 0):
+                        tl.files.save_npz(self.net_g.all_params, name=self.checkpoint_dir + '/g_{}.npz'.format(tl.global_flag['mode']),
+                                          sess=sess)
+                        tl.files.save_npz(self.net_d.all_params, name=self.checkpoint_dir + '/d_{}.npz'.format(tl.global_flag['mode']),
+                                          sess=sess)
 
     def sample_batch_for_test(self, video_set):
 
