@@ -91,8 +91,8 @@ class RecurrentSRGAN():
                 self.unrolled_tloss_total_loss += t_loss
                 self.net_g.print_params(False)
                 self.net_d.print_params(False)
-            self.unrolled_mse_total_loss = self.unrolled_mse_total_loss / self.time_steps
-            self.unrolled_g_total_loss = self.unrolled_mse_total_loss + (3e-3 * self.unrolled_gan_total_loss + 1e-2 * self.unrolled_tloss_total_loss)/self.time_steps
+            #self.unrolled_mse_total_loss = self.unrolled_mse_total_loss / self.time_steps
+            self.unrolled_g_total_loss = (self.unrolled_mse_total_loss + 3e-3 * self.unrolled_gan_total_loss + 1e-2 * self.unrolled_tloss_total_loss)/self.time_steps
             self.output_images = tf.stack(self.output_list)
             self.g_vars = tl.layers.get_variables_with_name('SRGAN_g', True, True)
             self.d_vars = tl.layers.get_variables_with_name('SRGAN_d', True, True)
@@ -145,12 +145,12 @@ class RecurrentSRGAN():
                 # writer = tf.summary.FileWriter("output", sess.graph)
                 # sess.run([self.t_wrapped_image],{self.raw_optical_flow: flow_input,self.output_image: initial_output})
                 # initial_output = sess.run(self.initial_output_image)
-                writer = tf.summary.FileWriter("output", sess.graph)
+                #writer = tf.summary.FileWriter("output", sess.graph)
 
                 errM,_ = sess.run([self.unrolled_mse_total_loss, self.g_init_train],
                                   feed_dict = {self.t_image: lr_frame_input, self.t_target_image: hr_frame_input
                                       , self.raw_optical_flow: flow_input})
-                writer.close()
+                #writer.close()
                 logging.info("Epoch [%2d/%2d] %4d time: %4.4fs, mse: %.8f " % (
                     epoch, n_epoch_init, n_iter, time.time() - step_time, errM))
                 total_mse_loss += errM
@@ -161,7 +161,7 @@ class RecurrentSRGAN():
                 if (idx % 50 == 0):
                     out = sess.run( self.output_images, {self.t_image: lr_test, self.t_target_image: hr_test, self.raw_optical_flow: flow_test})
                     print("[*] save images")#last time step of each batch
-                    tl.vis.save_images(out[-1], [self.ni, self.ni], self.save_dir_ginit + '/train_%d.png' % (epoch))
+                    tl.vis.save_images(out[-1], [self.ni, self.ni], self.save_dir_ginit + '/train_epoch_%d_step_%d_.png' % (epoch, idx))
                     #lpips metric
                     #normalized [0,1]
                     out = (out - np.min(out)) / np.ptp(out)
@@ -237,7 +237,7 @@ class RecurrentSRGAN():
                     if (idx % 50 == 0):
                         out = sess.run( self.output_images, {self.t_image: lr_test, self.t_target_image: hr_test, self.raw_optical_flow: flow_test})
                         print("[*] save images")#last step of each batch
-                        tl.vis.save_images(out[-1], [self.ni, self.ni], self.save_dir_gan + '/train_%d.png' % epoch)
+                        tl.vis.save_images(out[-1], [self.ni, self.ni], self.save_dir_gan + '/train_epoch_%d_step_%d_.png' % (epoch, idx))
                         # lpips metric
                         # normalized [0,1]
                         out = (out - np.min(out)) / np.ptp(out)
