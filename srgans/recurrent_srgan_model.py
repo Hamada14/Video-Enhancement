@@ -23,7 +23,7 @@ class RecurrentSRGAN():
             self.lr_init = config.TRAIN.lr_init
             self.beta1 = config.TRAIN.beta1
             self.time_steps = config.TRAIN.time_steps
-            self.ni = int(np.sqrt(self.time_steps))
+            self.ni = int(np.sqrt(self.time_steps)) + 1
             self.high_width = config.Model.high_width
             self.high_height = config.Model.high_height
             self.low_width = config.Model.low_width
