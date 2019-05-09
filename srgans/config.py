@@ -15,18 +15,18 @@ config.Model.low_width = 64
 config.Model.low_height = 64
 
 ## Adam
-config.TRAIN.data_points = 4
+config.TRAIN.data_points = 400
 config.TRAIN.batch_size = 4
 config.TRAIN.lr_init = 1e-4
 config.TRAIN.beta1 = 0.9
 
 ## initialize G
-config.TRAIN.n_epoch_init = 30
+config.TRAIN.n_epoch_init = 40
 config.TRAIN.lr_decay_init = 0.1
 config.TRAIN.decay_every_init = int(config.TRAIN.n_epoch_init / 2)
 
 ## adversarial learning (SRGAN)
-config.TRAIN.n_epoch = 4
+config.TRAIN.n_epoch = 500
 config.TRAIN.lr_decay = 0.1
 config.TRAIN.decay_every = int(config.TRAIN.n_epoch / 2)
 

@@ -83,7 +83,7 @@ class RecurrentSRGAN():
                 d_loss = d_loss1 + d_loss2
                 self.unrolled_d_total_loss += d_loss
                 # TODO check multiply here or at the end only multiply total loss???
-                g_gan_loss =  tl.cost.sigmoid_cross_entropy(self.logits_fake, tf.ones_like(self.logits_fake), name='g')
+                g_gan_loss = tl.cost.sigmoid_cross_entropy(self.logits_fake, tf.ones_like(self.logits_fake), name='g')
                 mse_loss = tl.cost.mean_squared_error(self.output_image, time_step_target_image, is_mean=True)
                 t_loss = tl.cost.mean_squared_error(self.output_image, self.t_wrapped_image, is_mean=True)
                 self.unrolled_mse_total_loss += mse_loss
@@ -91,8 +91,8 @@ class RecurrentSRGAN():
                 self.unrolled_tloss_total_loss += t_loss
                 self.net_g.print_params(False)
                 self.net_d.print_params(False)
-
-            self.unrolled_g_total_loss = (self.unrolled_mse_total_loss + 3e-3 * self.unrolled_gan_total_loss + 1e-2 * self.unrolled_tloss_total_loss)/self.time_steps
+            self.unrolled_mse_total_loss = self.unrolled_mse_total_loss / self.time_steps
+            self.unrolled_g_total_loss = self.unrolled_mse_total_loss + (3e-3 * self.unrolled_gan_total_loss + 1e-2 * self.unrolled_tloss_total_loss)/self.time_steps
             self.output_images = tf.stack(self.output_list)
             self.g_vars = tl.layers.get_variables_with_name('SRGAN_g', True, True)
             self.d_vars = tl.layers.get_variables_with_name('SRGAN_d', True, True)
@@ -158,15 +158,17 @@ class RecurrentSRGAN():
                 logging.info("[*] Epoch: [%2d/%2d] time: %4.4fs, mse: %.8f" % (
                     epoch, n_epoch_init, time.time() - epoch_time, total_mse_loss / n_iter))
             ## quick evaluation on train set
-            if (epoch % 10 == 0):
+            if (idx % 50 == 0):
                 out = sess.run( self.output_images, {self.t_image: lr_test, self.t_target_image: hr_test, self.raw_optical_flow: flow_test})
-                print("[*] save images")
-                tl.vis.save_images(out[-1], [self.ni, self.ni], self.save_dir_ginit + '/train_last_step_%d.png' % (epoch))
-                    #lpips metric
+                print("[*] save images")#last time step of each batch
+                tl.vis.save_images(out[-1], [self.ni, self.ni], self.save_dir_ginit + '/train_%d.png' % (epoch))
+                #lpips metric
+                #normalized [0,1]
+                out = (out - np.min(out)) / np.ptp(out)
                 lpips_dist = self.evaluate_with_lpips_metric(out,hr_test)
                 logging.info("Lpips Metric %s" % (str(lpips_dist)[1:-1]))
                  ## save model
-            if (epoch != 0) and (epoch % 10 == 0):
+            if (idx != 0) and (idx % 50 == 0):
                  tl.files.save_npz(self.net_g.all_params,
                                    name=self.checkpoint_dir + '/g_{}_init.npz'.format(tl.global_flag['mode']), sess=sess)
 
@@ -232,15 +234,18 @@ class RecurrentSRGAN():
                         epoch, n_epoch, time.time() - epoch_time, total_d_loss / n_iter,
                         total_g_loss / n_iter))
 
-
-            if (epoch % 10 == 0):
+            if (idx % 50 == 0):
                 out = sess.run( self.output_images, {self.t_image: lr_test, self.t_target_image: hr_test, self.raw_optical_flow: flow_test})
-                print("[*] save images")
-                 # for i in range(len(out[0])):
-                tl.vis.save_images(out, [self.ni, self.ni], self.save_dir_gan + '/train_%d.png' % epoch)
+                print("[*] save images")#last step of each batch
+                tl.vis.save_images(out[-1], [self.ni, self.ni], self.save_dir_gan + '/train_%d.png' % epoch)
+                # lpips metric
+                # normalized [0,1]
+                out = (out - np.min(out)) / np.ptp(out)
+                lpips_dist = self.evaluate_with_lpips_metric(out, hr_test)
+                logging.info("Lpips Metric %s" % (str(lpips_dist)[1:-1]))
                  ## save model
         # save model
-            if (epoch != 0) and (epoch % 10 == 0):
+            if (idx != 0) and (idx % 50 == 0):
                 tl.files.save_npz(self.net_g.all_params, name=self.checkpoint_dir + '/g_{}.npz'.format(tl.global_flag['mode']),
                                   sess=sess)
                 tl.files.save_npz(self.net_d.all_params, name=self.checkpoint_dir + '/d_{}.npz'.format(tl.global_flag['mode']),
