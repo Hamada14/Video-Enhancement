@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="729dcf01-1f98-40d1-bcec-c6f253c087d6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/srgans/lpipsTensorflow" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/srgans/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/srgans/config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/srgans/recurrent_srgan_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/srgans/recurrent_srgan_model.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -35,8 +35,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/srgans/config.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="328">
-              <caret line="23" column="30" selection-start-line="23" selection-start-column="30" selection-end-line="23" selection-end-column="30" />
+            <state relative-caret-position="198">
+              <caret line="17" column="24" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="24" />
               <folding>
                 <element signature="e#0#38#0" expanded="true" />
               </folding>
@@ -47,7 +47,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pre_processing/video_reader.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
+            <state relative-caret-position="60">
               <caret line="6" column="17" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="17" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
@@ -59,8 +59,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pre_processing/video_dataset.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="20" selection-start-line="2" selection-end-line="3" />
+            <state relative-caret-position="15">
+              <caret line="12" selection-start-line="12" selection-end-line="12" />
+              <folding>
+                <element signature="e#0#14#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -68,8 +71,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/srgans/recurrent_srgan_model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="19" column="40" selection-start-line="19" selection-start-column="40" selection-end-line="19" selection-end-column="40" />
+            <state relative-caret-position="244">
+              <caret line="172" column="31" lean-forward="true" selection-end-line="266" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
               </folding>
@@ -80,7 +83,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/srgans/srgan_cell_model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-649">
+            <state relative-caret-position="180">
               <caret line="15" column="19" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="19" />
             </state>
           </provider>
@@ -107,9 +110,16 @@
       <find>self.logger</find>
       <find>hr_test</find>
       <find>sess</find>
-      <find>sample_batch_for_test</find>
-      <find>output_images</find>
       <find>video_set</find>
+      <find>sample_batch_for_test</find>
+      <find>logging</find>
+      <find>t_image_input_to_SRGAN_generator</find>
+      <find>t_image</find>
+      <find>self.output_images</find>
+      <find>out</find>
+      <find>output_images</find>
+      <find>output_list</find>
+      <find>output_image</find>
     </findStrings>
     <replaceStrings>
       <replace>logging</replace>
@@ -133,8 +143,8 @@
         <option value="$PROJECT_DIR$/SRGANs/config.py" />
         <option value="$PROJECT_DIR$/recurrent_srgan_trainer.py" />
         <option value="$PROJECT_DIR$/pre_processing/recurrent_srgan_model.py" />
-        <option value="$PROJECT_DIR$/srgans/config.py" />
         <option value="$PROJECT_DIR$/srgans/lpipsTensorflow/lpips_tf.py" />
+        <option value="$PROJECT_DIR$/srgans/config.py" />
         <option value="$PROJECT_DIR$/srgans/recurrent_srgan_model.py" />
       </list>
     </option>
@@ -151,7 +161,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -168,6 +177,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -221,7 +231,7 @@
     <frame x="67" y="27" width="1299" height="741" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.29075235" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17476489" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -292,60 +302,15 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/lpips-tensorflow/lpips_tf.py" />
+    <entry file="file://$PROJECT_DIR$/lpipsTensorflow/lpips_tf.py" />
+    <entry file="file://$PROJECT_DIR$/lpipsTensorflow/setup.py" />
+    <entry file="file://$PROJECT_DIR$/lpipsTensorflow/test_network.py" />
+    <entry file="file://$PROJECT_DIR$/srgans/lpipsTensorflow/lpips_tf.py" />
     <entry file="file://$PROJECT_DIR$/frvsr/model.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
           <caret line="14" column="16" selection-start-line="14" selection-start-column="8" selection-end-line="14" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pre_processing/video_dataset.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="20" selection-start-line="2" selection-end-line="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pre_processing/video_reader.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="17" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lpips-tensorflow/lpips_tf.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lpipsTensorflow/lpips_tf.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-589">
-          <caret line="22" column="47" selection-start-line="22" selection-start-column="47" selection-end-line="22" selection-end-column="47" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lpipsTensorflow/setup.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lpipsTensorflow/test_network.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="29" column="4" selection-start-line="29" selection-start-column="4" selection-end-line="29" selection-end-column="42" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -356,37 +321,47 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/srgans/config.py">
+    <entry file="file://$PROJECT_DIR$/pre_processing/video_reader.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="328">
-          <caret line="23" column="30" selection-start-line="23" selection-start-column="30" selection-end-line="23" selection-end-column="30" />
+        <state relative-caret-position="60">
+          <caret line="6" column="17" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="17" />
           <folding>
-            <element signature="e#0#38#0" expanded="true" />
+            <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/srgans/lpipsTensorflow/lpips_tf.py">
+    <entry file="file://$PROJECT_DIR$/pre_processing/video_dataset.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" selection-start-line="8" selection-end-line="8" />
+        <state relative-caret-position="15">
+          <caret line="12" selection-start-line="12" selection-end-line="12" />
           <folding>
-            <element signature="e#0#9#0" expanded="true" />
+            <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/srgans/srgan_cell_model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-649">
+        <state relative-caret-position="180">
           <caret line="15" column="19" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/srgans/config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="17" column="24" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/srgans/recurrent_srgan_model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="19" column="40" selection-start-line="19" selection-start-column="40" selection-end-line="19" selection-end-column="40" />
+        <state relative-caret-position="244">
+          <caret line="172" column="31" lean-forward="true" selection-end-line="266" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
           </folding>

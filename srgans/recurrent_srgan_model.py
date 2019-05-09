@@ -73,7 +73,7 @@ class RecurrentSRGAN():
                 self.net_g , self.output_image = SRGAN_generator(time_step_image, self.t_wrapped_image ,reuse=tf.AUTO_REUSE)
 
                 # self.print_estimate = tf.print(self.output_image, [self.output_image])
-                self.output_list.append(self.output_image[0])
+                self.output_list.append(self.output_image)
                 self.net_d, self.logits_real = SRGAN_discriminator(time_step_target_image,
                                                                    is_train=True, reuse=tf.AUTO_REUSE)
                 _, self.logits_fake = SRGAN_discriminator(self.output_image, is_train=True, reuse=tf.AUTO_REUSE)
@@ -160,11 +160,11 @@ class RecurrentSRGAN():
             if (epoch % 10 == 0):
                 out = sess.run( self.output_images, {self.t_image: lr_test, self.t_target_image: hr_test, self.raw_optical_flow: flow_test})
                 print("[*] save images")
-                 # for i in range(len(out[0])):
-                tl.vis.save_images(out, [self.ni, self.ni], self.save_dir_ginit + '/train_%d.png' % epoch)
-                #lpips metric
-                lpips_dist = self.evaluate_with_lpips_metric(self.output_images,hr_test)
-                logging.info("Lpips Metric: %.8f" % lpips_dist)
+                for i in range(self.batch_size):
+                    tl.vis.save_images(out[i], [self.ni, self.ni], self.save_dir_ginit + '/train_step%d%d.png' % (epoch,i))
+                    #lpips metric
+                    lpips_dist = self.evaluate_with_lpips_metric(out,hr_test)
+                    #logging.info("Lpips Metric: %.8f" % lpips_dist)
                  ## save model
             if (epoch != 0) and (epoch % 10 == 0):
                  tl.files.save_npz(self.net_g.all_params,
