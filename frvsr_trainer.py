@@ -69,7 +69,7 @@ def train(model, device, data_set, checkpoint_path, validation_set):
         train_loss = 0.0
         validate(model, device, validation_set)
         model.train()
-        steps = 1000
+        steps = 350
         progress_bar = trange(steps, desc='Training', leave=True)
         for j in progress_bar:
             lr_imgs, hr_imgs = data_set.next_data()
@@ -106,6 +106,7 @@ def train(model, device, data_set, checkpoint_path, validation_set):
 
 def validate(model, device, validation_set):
     model.eval()
+    content_criterion = FRVSR_models.Loss().to(device)
     with torch.no_grad():
         progress_bar = trange(len(validation_set), desc='Training', leave=True)
         running_loss = 0
@@ -114,6 +115,8 @@ def validate(model, device, validation_set):
             lr_imgs = lr_imgs.to(device)
             hr_imgs = hr_imgs.to(device)
             model.init_hidden(device)
+            batch_content_loss = 0
+            batch_flow_loss = 0
             cnt = 0
             for lr_img, hr_img in zip(lr_imgs, hr_imgs):
                 hr_est, lr_est = model(lr_img)
@@ -123,7 +126,6 @@ def validate(model, device, validation_set):
                 if cnt > 0:
                     batch_flow_loss += flow_loss
                 cnt += 1
-            output_period += 1
             loss = batch_content_loss + batch_flow_loss
             running_loss += loss
             progress_bar.set_description('[Validation] last loss : {:.8f}, average loss: {:.8f}'.format(loss.item(), running_loss/(i + 1)))
@@ -135,7 +137,7 @@ def validate(model, device, validation_set):
 
 def build_validation_data():
     data = []
-    videos_count = 20
+    videos_count = 10
     snapshot_count = 5
     skip_size = 10
 
