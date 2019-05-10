@@ -42,7 +42,7 @@ def load_model(path, batch_size, width, height):
         model.load_state_dict(checkpoint)
     return model
 
-def train(model, data_set, device, checkpoint_path):
+def train(model, device, data_set, checkpoint_path):
     num_epochs = 25
     content_criterion = FRVSR_models.Loss().to(device)
     optimizer = optim.Adam(model.parameters(), lr=1e-5)
