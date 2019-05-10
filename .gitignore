@@ -1,6 +1,8 @@
 # Jet Brains IDE
 .idea
 
+.grive_state
+.grive
 # check points
 check_point/frvsr/
 data_set/

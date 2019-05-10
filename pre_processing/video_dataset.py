@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 import h5py
 import glob
-
+from torchvision import datasets, transforms
 import cvbase as cvb
 
 IMAGE_DEPTH = 3
@@ -17,11 +17,16 @@ TEMPORAL_STEPS = 10
 
 GAUSSIAN_X_STD = 1.5
 GAUSSIAN_Y_STD = 1.5
+import torch
+
+base_transform = transforms.Compose([
+    transforms.ToTensor(),
+    # transforms.Normalize([0.5] * 3, [0.5] * 3)
+])
 
 
 class VideoDataSet():
-    def __init__(self, flow_net, directory, batch_size, frames_len, frame_max_try, high_img_size, scale_factor):
-        self.flow_net = flow_net
+    def __init__(self, directory, batch_size, frames_len, frame_max_try, high_img_size, scale_factor):
         self.batch_size = batch_size
         self.frames_len = frames_len
         self.video_index = 0
@@ -43,10 +48,25 @@ class VideoDataSet():
             self.batch_size,
             self.scale_factor
         )
-        flow_batches = calculate_batch_flows(lr_batches, self.flow_net)
         self.frame_try += 1
         self.update_current_frames_if_needed()
-        return lr_batches, hr_batches, flow_batches
+        return self.convert_to_tensor(lr_batches), self.convert_to_tensor(hr_batches)
+
+    def convert_to_tensor(self, imgs_batch):
+        imgs_batch = np.array(imgs_batch)
+        imgs_batch = imgs_batch.transpose((1, 0, 4, 2, 3))
+        return torch.Tensor(imgs_batch)
+    
+    def skip_data(self):
+        self.current_video_reader.skip_batch(self.frames_len)
+
+
+    def skip_video(self):
+        self.video_index = (self.video_index + 1) % len(self.videos)
+        self.current_video_reader = VideoReader(self.videos[self.video_index])
+        self.current_frames = self.current_video_reader.read_batch(self.frames_len)
+        self.current_down_scaled = down_scale_batch(self.current_frames, 2)
+        self.frame_try = 0
 
 
     def update_current_frames_if_needed(self):
@@ -96,25 +116,6 @@ def down_scale_batch(frames, factor):
         (width, height) = dimensions[0] / factor, dimensions[1] / factor
         down_scaled.append(resize(frames[frame_idx], (width, height)))
     return down_scaled
-
-
-def calculate_batch_flows(lr_batches, flow_net):
-    flow_batches = []
-    for lr_batch in lr_batches:
-        flow_batches.append(calculate_flow(lr_batch, flow_net))
-    return flow_batches
-
-
-def calculate_flow(low_batch, flow_net):
-    flow_results = []
-    for idx in range(len(low_batch)):
-        if idx == 0:
-            low_1 = np.zeros((low_batch[0].shape[0], low_batch[1].shape[1], IMAGE_DEPTH))
-        else:
-            low_1 = low_batch[idx - 1]
-        low_2 = low_batch[idx]
-        flow_results.append(flow_net.inference_imgs(low_1, low_2))
-    return flow_results
 
 
 def down_sample_image(image, factor):
