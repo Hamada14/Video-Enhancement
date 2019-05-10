@@ -34,17 +34,21 @@ logger = logging.getLogger()
 
 
 def load_model(path, batch_size, width, height):
+    logger.debug('Loading the FRVSR model')
     model = FRVSR_models.FRVSR(batch_size=batch_size, lr_height=height, lr_width=width)
-    checkpoint = torch.load(path, map_location='cpu')
-    model.load_state_dict(checkpoint)
+    if os.path.isfile(path):
+        logger.debug('No previous checkpoint found')
+        checkpoint = torch.load(path, map_location='cpu')
+        model.load_state_dict(checkpoint)
     return model
 
-def train(model, data_set, device):
+def train(model, data_set, device, checkpoint_path):
     num_epochs = 25
     content_criterion = FRVSR_models.Loss().to(device)
     optimizer = optim.Adam(model.parameters(), lr=1e-5)
 
     epoch = 1
+    print('Starting training')
     while epoch <= num_epochs:
         train_loss = 0.0
         model.train()
@@ -76,7 +80,7 @@ def train(model, data_set, device):
 
         gc.collect()
         # save after every epoch
-        torch.save(model.state_dict(), "models/FRVSR.%d" % epoch)
+        torch.save(model.state_dict(), checkpoint_path)
         gc.collect()
 
 
@@ -123,7 +127,7 @@ SCALE_FACTOR = 4
 FRAME_TRY = 10
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-CHECK_POINT_PATH = os.path.join(dir_path, 'check_point/frvsr/')
+CHECK_POINT_PATH = os.path.join(dir_path, 'check_point/frvsr')
 DATA_SET_PATH = os.path.join(dir_path, 'data_set')
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model = load_model(CHECK_POINT_PATH, BATCH_SIZE, width, height)
@@ -137,4 +141,4 @@ video_dataset = VideoDataSet(
     HIGH_IMG_SIZE,
     SCALE_FACTOR
 )
-train(model, device, video_dataset)
+train(model, device, video_dataset, CHECK_POINT_PATH)
