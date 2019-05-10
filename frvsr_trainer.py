@@ -117,38 +117,28 @@ def validate(model, device):
             epoch_valid_loss = (epoch_valid_loss * (batch_num - 1) + loss) / batch_num
 
 
-def run():
-    # Parameters
-    FRAMES_LEN = 10
-    BATCH_SIZE = 4
-    width, height = 64, 64
 
-    HIGH_IMG_SIZE = 256
-    SCALE_FACTOR = 4
-    FRAME_TRY = 10
+FRAMES_LEN = 10
+BATCH_SIZE = 4
+width, height = 64, 64
 
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    CHECK_POINT_PATH = os.path.join(dir_path, 'check_point/frvsr/')
-    DATA_SET_PATH = os.path.join(dir_path, 'data_set')
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    model = load_model(CHECK_POINT_PATH, BATCH_SIZE, width, height)
-    model = model.to(device)
+HIGH_IMG_SIZE = 256
+SCALE_FACTOR = 4
+FRAME_TRY = 10
 
-    video_dataset = VideoDataSet(
-        DATA_SET_PATH,
-        BATCH_SIZE,
-        FRAMES_LEN,
-        FRAME_TRY,
-        HIGH_IMG_SIZE,
-        SCALE_FACTOR
-    )
-    train(model, device, video_dataset)
+dir_path = os.path.dirname(os.path.realpath(__file__))
+CHECK_POINT_PATH = os.path.join(dir_path, 'check_point/frvsr/')
+DATA_SET_PATH = os.path.join(dir_path, 'data_set')
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+model = load_model(CHECK_POINT_PATH, BATCH_SIZE, width, height)
+model = model.to(device)
 
-
-
-
-
-if __name__ == "__main__":
-    print('Starting training')
-    run()
-    print('Training terminated')
+video_dataset = VideoDataSet(
+    DATA_SET_PATH,
+    BATCH_SIZE,
+    FRAMES_LEN,
+    FRAME_TRY,
+    HIGH_IMG_SIZE,
+    SCALE_FACTOR
+)
+train(model, device, video_dataset)
