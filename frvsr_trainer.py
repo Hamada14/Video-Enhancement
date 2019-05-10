@@ -1,19 +1,27 @@
-import logging
-import os
-from logging.config import fileConfig
 from datetime import datetime
-
 from flow_model_wrapper import FlowModelWrapper
+from logging.config import fileConfig
 from pre_processing.video_dataset import VideoDataSet
-from frvsr.model import FRVSR
+from SRGAN import pytorch_ssim
+from torch.autograd import Variable
+import Dataset_OnlyHR
+import frvsr.FRVSR_models as FRVSR_models
+import logging
+import numpy as np
+import os
+import pandas as pd
+import sys
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import torch.optim.lr_scheduler
+import gc
+from tqdm import tqdm
+from tqdm import trange
 
 
-LR_HEIGHT = 64
-LR_WIDTH = 64
-IMAGE_CHANNELS = 3
-FLOW_DEPTH = 2
-HIGH_IMG_SIZE = 256
-SCALE_FACTOR = 4
+torch.backends.cudnn.benchmark = True
+
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 now = datetime.now()
@@ -28,50 +36,105 @@ logging.basicConfig(
 
 logger = logging.getLogger()
 
-CHECK_POINT_PATH = os.path.join(dir_path, 'check_point/frvsr/')
-DATA_SET_PATH = os.path.join(dir_path, 'data_set')
+
+def load_model(path, batch_size, width, height):
+    model = FRVSR_models.FRVSR(batch_size=batch_size, lr_height=height, lr_width=width)
+    checkpoint = torch.load(path, map_location='cpu')
+    model.load_state_dict(checkpoint)
+    return model
+
+def train(model, data_set, device):
+    num_epochs = 25
+    content_criterion = FRVSR_models.Loss().to(device)
+    optimizer = optim.Adam(model.parameters(), lr=1e-5)
+
+    epoch = 1
+    while epoch <= num_epochs:
+        train_loss = 0.0
+        model.train()
+        steps = 1000
+        progress_bar = trange(steps, desc='Training', leave=True)
+        for j in progress_bar:
+            lr_imgs, hr_imgs = data_set.next_data()
+            lr_imgs = lr_imgs.to(device)
+            hr_imgs = hr_imgs.to(device)
+            optimizer.zero_grad()
+            model.init_hidden(device)
+            batch_content_loss = 0
+            batch_flow_loss = 0
+            cnt = 0
+            for lr_img, hr_img in zip(lr_imgs, hr_imgs):
+                hr_est, lr_est = model(lr_img)
+                content_loss = content_criterion(hr_est, hr_img)
+                flow_loss = torch.mean((lr_img - lr_est) ** 2)
+                batch_content_loss += content_loss
+                if cnt > 0:
+                    batch_flow_loss += flow_loss
+                cnt += 1
+            loss = batch_content_loss + batch_flow_loss
+            loss.backward()
+            optimizer.step()
+            train_loss += loss.item()
+            progress_bar.set_description('last loss : {:.8f}, average loss: {:.8f}'.format(loss.item(), train_loss/(j + 1)))
+            progress_bar.refresh()
+
+        gc.collect()
+        # save after every epoch
+        torch.save(model.state_dict(), "models/FRVSR.%d" % epoch)
+        gc.collect()
 
 
-def build_validation_data():
-    data = []
-    videos_count = 10
-    snapshot_count = 5
-    skip_size = 10
+        epoch += 1
 
-    BATCH_SIZE = 4
+def validate(model, device):
+    model.eval()
+    with torch.no_grad():
+        output_period = 0
+        running_loss = 0
+        for batch_num, (lr_imgs, hr_imgs) in enumerate(val_loader, 1):
+            lr_imgs = lr_imgs.to(device)
+            hr_imgs = hr_imgs.to(device)
+            model.init_hidden(device)
+            batch_content_loss = 0
+            batch_flow_loss = 0
+
+            # lr_imgs = 7 * 4 * 3 * H * W
+            cnt = 0
+            for lr_img, hr_img in zip(lr_imgs, hr_imgs):
+                # print(lr_img.shape)
+                hr_est, lr_est = model(lr_img)
+                content_loss = content_criterion(hr_est, hr_img)
+                flow_loss = torch.mean((lr_img - lr_est) ** 2)
+                # flow_loss = ssim_loss(lr_img, lr_est)
+                # print(f'content_loss is {content_loss}, flow_loss is {flow_loss}')
+                batch_content_loss += content_loss
+                if cnt > 0:
+                    batch_flow_loss += flow_loss
+                cnt += 1
+            output_period += 1
+            loss = batch_content_loss + batch_flow_loss
+            running_loss += loss
+            epoch_valid_loss = (epoch_valid_loss * (batch_num - 1) + loss) / batch_num
+
+
+def run():
+    # Parameters
     FRAMES_LEN = 10
-    FRAME_TRY = 1
-
-    logger.debug('Building the validation dataset')
-
-    video_dataset = VideoDataSet(
-        FlowModelWrapper.getInstance(),
-        DATA_SET_PATH,
-        BATCH_SIZE,
-        FRAMES_LEN,
-        FRAME_TRY,
-        HIGH_IMG_SIZE,
-        SCALE_FACTOR
-    )
-
-    for video_idx in range(videos_count):
-        for snapshot in range(snapshot_count):
-            for skip in range(skip_size):
-                video_dataset.skip_data()
-            data.append(video_dataset.next_data())
-        video_dataset.skip_video()
-
-    logger.debug('Finished building the validation dataset')
-    return data
-
-
-def train():
     BATCH_SIZE = 4
-    FRAMES_LEN = 10
+    width, height = 64, 64
+
+    HIGH_IMG_SIZE = 256
+    SCALE_FACTOR = 4
     FRAME_TRY = 10
 
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    CHECK_POINT_PATH = os.path.join(dir_path, 'check_point/frvsr/')
+    DATA_SET_PATH = os.path.join(dir_path, 'data_set')
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    model = load_model(CHECK_POINT_PATH, BATCH_SIZE, width, height)
+    model = model.to(device)
+
     video_dataset = VideoDataSet(
-        FlowModelWrapper.getInstance(),
         DATA_SET_PATH,
         BATCH_SIZE,
         FRAMES_LEN,
@@ -79,47 +142,13 @@ def train():
         HIGH_IMG_SIZE,
         SCALE_FACTOR
     )
-
-    frvsr_model = FRVSR(
-        BATCH_SIZE,
-        FRAMES_LEN,
-        LR_HEIGHT,
-        LR_WIDTH,
-        IMAGE_CHANNELS,
-        FLOW_DEPTH,
-        CHECK_POINT_PATH
-    )
-
-    frvsr_model.train(video_dataset, build_validation_data())
+    train(model, device, video_dataset)
 
 
-def inference():
-    BATCH_SIZE = 1 # change to 4
-    FRAMES_LEN = 4 # change to 10
-    FRAME_TRY = 1 # change to 15
 
-    video_dataset = VideoDataSet(
-        FlowModelWrapper.getInstance(),
-        DATA_SET_PATH,
-        BATCH_SIZE,
-        FRAMES_LEN,
-        FRAME_TRY,
-        HIGH_IMG_SIZE,
-        SCALE_FACTOR
-    )
 
-    frvsr_model = FRVSR(
-        BATCH_SIZE,
-        FRAMES_LEN,
-        LR_HEIGHT,
-        LR_WIDTH,
-        IMAGE_CHANNELS,
-        FLOW_DEPTH,
-        CHECK_POINT_PATH
-    )
 
-    for i in range(10):
-        lr, hr, flow = video_dataset.next_data()
-        frvsr_model.test_inference(lr, flow, hr)
-train()
-#inference()
+if __name__ == "__main__":
+    print('Starting training')
+    run()
+    print('Training terminated')

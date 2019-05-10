@@ -20,8 +20,7 @@ GAUSSIAN_Y_STD = 1.5
 
 
 class VideoDataSet():
-    def __init__(self, flow_net, directory, batch_size, frames_len, frame_max_try, high_img_size, scale_factor):
-        self.flow_net = flow_net
+    def __init__(self, directory, batch_size, frames_len, frame_max_try, high_img_size, scale_factor):
         self.batch_size = batch_size
         self.frames_len = frames_len
         self.video_index = 0
@@ -43,10 +42,9 @@ class VideoDataSet():
             self.batch_size,
             self.scale_factor
         )
-        flow_batches = calculate_batch_flows(lr_batches, self.flow_net)
         self.frame_try += 1
         self.update_current_frames_if_needed()
-        return lr_batches, hr_batches, flow_batches
+        return lr_batches, hr_batches
 
 
     def skip_data(self):
@@ -108,23 +106,6 @@ def down_scale_batch(frames, factor):
         (width, height) = dimensions[0] / factor, dimensions[1] / factor
         down_scaled.append(resize(frames[frame_idx], (width, height)))
     return down_scaled
-
-
-def calculate_batch_flows(low_batches, flow_net):
-    low_batches = np.array(low_batches)
-    batch_size = low_batches.shape[0]
-    seq = low_batches.shape[1]
-    h = low_batches.shape[2]
-    w = low_batches.shape[3]
-    flow_results = np.zeros((batch_size, seq, h, w, 2))
-    for idx in range(seq):
-        if idx == 0:
-            low_1 = np.zeros((batch_size, h, w, IMAGE_DEPTH))
-        else:
-            low_1 = low_batches[:, idx - 1]
-        low_2 = low_batches[:, idx]
-        flow_results[:, idx] = flow_net.inference_imgs_batch(low_1, low_2)
-    return flow_results
 
 
 def down_sample_image(image, factor):
