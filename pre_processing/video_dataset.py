@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 import h5py
 import glob
-
+from torchvision import datasets, transforms
 import cvbase as cvb
 
 IMAGE_DEPTH = 3
@@ -17,6 +17,12 @@ TEMPORAL_STEPS = 10
 
 GAUSSIAN_X_STD = 1.5
 GAUSSIAN_Y_STD = 1.5
+import torch
+
+base_transform = transforms.Compose([
+    transforms.ToTensor(),
+    # transforms.Normalize([0.5] * 3, [0.5] * 3)
+])
 
 
 class VideoDataSet():
@@ -44,9 +50,13 @@ class VideoDataSet():
         )
         self.frame_try += 1
         self.update_current_frames_if_needed()
-        return lr_batches, hr_batches
+        return self.convert_to_tensor(lr_batches), self.convert_to_tensor(hr_batches)
 
-
+    def convert_to_tensor(self, imgs_batch):
+        imgs_batch = np.array(imgs_batch)
+        imgs_batch = imgs_batch.transpose((1, 0, 4, 2, 3))
+        return torch.Tensor(imgs_batch)
+    
     def skip_data(self):
         self.current_video_reader.skip_batch(self.frames_len)
 

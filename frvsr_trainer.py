@@ -56,8 +56,6 @@ def train(model, device, data_set, checkpoint_path):
         progress_bar = trange(steps, desc='Training', leave=True)
         for j in progress_bar:
             lr_imgs, hr_imgs = data_set.next_data()
-            lr_imgs = torch.stack(lr_imgs, dim=0)
-            hr_imgs = torch.stack(hr_imgs, dim=0)
             lr_imgs = lr_imgs.to(device)
             hr_imgs = hr_imgs.to(device)
             optimizer.zero_grad()

@@ -161,7 +161,6 @@ class FRVSR(nn.Module):
             tensor[tensor < 0] = 0
             tensor[tensor > 1] = 1
             return tensor
-
         # print(f'input.shape is {input.shape}, lastImg shape is {self.lastLrImg.shape}')
         preflow = torch.cat((input, self.lastLrImg), dim=1)
         flow = self.fnet(preflow)
