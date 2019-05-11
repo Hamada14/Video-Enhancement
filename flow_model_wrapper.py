@@ -99,7 +99,7 @@ class FlowModelWrapper:
         batch_size = len(img1_batch)
         images = []
         for i in range(batch_size):
-            img1 = img2_batch[i]
+            img1 = img1_batch[i]
             img2 = img2_batch[i]
             images.append(np.array([img1, img2]).transpose(3, 0, 1, 2))
         images = np.array(images)
