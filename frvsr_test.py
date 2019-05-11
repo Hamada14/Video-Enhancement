@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
         sr_video_size = (int(videoCapture.get(cv2.CAP_PROP_FRAME_WIDTH) * UPSCALE_FACTOR),
                          int(videoCapture.get(cv2.CAP_PROP_FRAME_HEIGHT)) * UPSCALE_FACTOR)
-
+        print('Video size is ({}, {})'.format(lr_width, lr_height))
         sr_video_writer = cv2.VideoWriter(OUTPUT_VIDEO, cv2.VideoWriter_fourcc('M', 'P', '4', 'V'), fps, sr_video_size)
 
         success, frame = videoCapture.read()

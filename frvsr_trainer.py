@@ -42,10 +42,10 @@ SCALE_FACTOR = 4
 FRAME_TRY = 10
 BATCH_SIZE = 4
 FRAMES_LEN = 10
-FRAME_TRY = 1
+FRAME_TRY = 2
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-CHECK_POINT_PATH = os.path.join(dir_path, 'check_point/frvsr')
+CHECK_POINT_PATH = os.path.join(dir_path, 'check_point/frvsr-pytorch')
 DATA_SET_PATH = os.path.join(dir_path, 'data_set')
 
 
@@ -53,7 +53,7 @@ def load_model(path, batch_size, width, height):
     logger.debug('Loading the FRVSR model')
     model = FRVSR_models.FRVSR(batch_size=batch_size, lr_height=height, lr_width=width)
     if os.path.isfile(path):
-        logger.debug('No previous checkpoint found')
+        logger.debug('previous checkpoint found')
         checkpoint = torch.load(path, map_location='cpu')
         model.load_state_dict(checkpoint)
     return model
@@ -61,7 +61,7 @@ def load_model(path, batch_size, width, height):
 def train(model, device, data_set, checkpoint_path, validation_set):
     num_epochs = 25
     content_criterion = FRVSR_models.Loss().to(device)
-    optimizer = optim.Adam(model.parameters(), lr=1e-5)
+    optimizer = optim.Adam(model.parameters(), lr=1e-6)
 
     epoch = 1
     print('Starting training')
@@ -138,7 +138,7 @@ def validate(model, device, validation_set):
 def build_validation_data():
     data = []
     videos_count = 10
-    snapshot_count = 5
+    snapshot_count = 10
     skip_size = 10
 
     logger.debug('Building the validation dataset')
