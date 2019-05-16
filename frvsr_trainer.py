@@ -35,7 +35,7 @@ DATA_SET_PATH = os.path.join(dir_path, 'data_set')
 def build_validation_data():
     data = []
     videos_count = 10
-    snapshot_count = 5
+    snapshot_count = 10
     skip_size = 10
 
     BATCH_SIZE = 4

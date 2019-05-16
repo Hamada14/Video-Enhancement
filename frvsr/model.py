@@ -40,19 +40,17 @@ class FRVSR():
                 pre_conv = tf.layers.conv2d(
                     inputs=model_input, filters=64, kernel_size=[3, 3], padding="same",
                     strides=1, name="pre_conv", kernel_initializer=tf.contrib.layers.xavier_initializer(),
-                    activation=tf.nn.leaky_relu
+                    activation=tf.nn.relu
                 )
-                pre_relu = tf.nn.relu(pre_conv, name="pre_relu")
-                pre = pre_relu
+                pre = pre_conv
                 for conv_layer in range(10):
                     conv1 = tf.layers.conv2d(
                         inputs=pre, filters=64, kernel_size=[3, 3], padding="same",
                         strides=1, name="conv_1_" + str(conv_layer), kernel_initializer=tf.contrib.layers.xavier_initializer(),
-                        activation=tf.nn.leaky_relu
+                        activation=tf.nn.relu
                     )
-                    relu = tf.nn.relu(conv1, name="relu_" + str(conv_layer))
                     conv2 = tf.layers.conv2d(
-                        inputs=relu, filters=64, kernel_size=[3, 3], padding="same",
+                        inputs=conv1, filters=64, kernel_size=[3, 3], padding="same",
                         strides=1, name="conv_2_" + str(conv_layer), kernel_initializer=tf.contrib.layers.xavier_initializer(),
                         activation=tf.nn.leaky_relu
                     )
@@ -60,16 +58,14 @@ class FRVSR():
 
                 transpose_1 = tf.layers.conv2d_transpose(
                     pre, 64, [3, 3], strides=2, padding='same', name="transpose_1",
-                    kernel_initializer=tf.contrib.layers.xavier_initializer(), activation=tf.nn.leaky_relu
+                    kernel_initializer=tf.contrib.layers.xavier_initializer(), activation=tf.nn.relu
                 )
-                relu_1 = tf.nn.relu(transpose_1, name="post_relu_1")
                 transpose_2 = tf.layers.conv2d_transpose(
-                    relu_1, 64, [3, 3], strides=2, padding='same', name="transpose_2",
-                    kernel_initializer=tf.contrib.layers.xavier_initializer(), activation=tf.nn.leaky_relu
+                    transpose_1, 64, [3, 3], strides=2, padding='same', name="transpose_2",
+                    kernel_initializer=tf.contrib.layers.xavier_initializer(), activation=tf.nn.relu
                 )
-                relu_2 = tf.nn.relu(transpose_2, name="post_relu_2")
                 estimate = tf.layers.conv2d(
-                    inputs=relu_2, filters=3, kernel_size=[3, 3], padding="same", strides=1, name="estimate",
+                    inputs=transpose_2, filters=3, kernel_size=[3, 3], padding="same", strides=1, name="estimate",
                     kernel_initializer=tf.contrib.layers.xavier_initializer(), activation=tf.nn.leaky_relu
                 )
                 return estimate
@@ -92,7 +88,7 @@ class FRVSR():
         output = tf.transpose(states, [1, 0, 2, 3, 4])
         self.seq_loss = tf.reduce_mean(tf.squared_difference(output[0], hr_frame_input[0]), [1, 2, 3])
         self.loss = tf.reduce_mean(tf.reduce_mean(tf.squared_difference(output, hr_frame_input), [1, 2, 3, 4]))
-        self.train_op = tf.train.AdagradOptimizer(learning_rate=1e-4).minimize(self.loss)
+        self.train_op = tf.train.AdagradOptimizer(learning_rate=5e-4).minimize(self.loss)
         self.predict = output
         self.check_point_path = check_point_path
 
@@ -119,7 +115,7 @@ class FRVSR():
                 logger.debug('No checkpoint is found for FRVSR to load')
             train_loss = 0
             for i in range(epochs):
-                steps = 1000
+                steps = 500
                 progress_bar = trange(steps, desc='Training', leave=True)
                 global_step = global_step + 1
                 preprocessing_time = 0
