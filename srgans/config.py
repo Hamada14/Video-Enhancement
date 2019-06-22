@@ -8,7 +8,7 @@ config.TRAIN = edict()
 config.Model = edict()
 ##Model Parameters
 config.TRAIN.time_steps = 10
-config.Model.check_point_path = '/home/hamada/Video-Enhancement/srgans/check_points'
+config.Model.check_point_path = '/home/hamada/Video-Enhancement/srgans/check_points/'
 config.Model.high_width = 256
 config.Model.high_height = 256
 config.Model.low_width = 64
