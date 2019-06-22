@@ -17,8 +17,6 @@ class RecurrentSRGAN():
 
     def __init__(self):
 
- #       jit_scope = tf.contrib.compiler.jit.experimental_jit_scope
-#        with jit_scope():
             self.batch_size = config.TRAIN.batch_size
             self.lr_init = config.TRAIN.lr_init
             self.beta1 = config.TRAIN.beta1
@@ -59,7 +57,6 @@ class RecurrentSRGAN():
             self.output_list = []
 
             #Unrolling the GAN model for t steps
-            # for t in range(self.time_steps):
             for t in range(self.time_steps):
                 self.t_optical_flow = tf.image.resize_bilinear(tf.reshape(
                 tf.slice(self.raw_optical_flow, [0, t, 0, 0, 0], [self.batch_size, 1, -1, -1, -1]), [self.batch_size, self.low_width, self.low_height,2])
@@ -123,19 +120,17 @@ class RecurrentSRGAN():
         configure.graph_options.optimizer_options.global_jit_level = tf.OptimizerOptions.OFF
         sess = tf.Session(config=configure)
         tl.layers.initialize_global_variables(sess)
-        if tl.files.load_and_assign_npz(sess=sess, name=self.checkpoint_dir + '/g_{}.npz'.format(tl.global_flag['mode']),
-                                        network=self.net_g) is False:
-            tl.files.load_and_assign_npz(sess=sess,
-                                         name=self.checkpoint_dir + '/g_{}_init.npz'.format(tl.global_flag['mode']),
-                                         network=self.net_g)
+#        if tl.files.load_and_assign_npz(sess=sess, name=self.checkpoint_dir + '/g_{}.npz'.format(tl.global_flag['mode']),
+#                                        network=self.net_g) is False:
+#            tl.files.load_and_assign_npz(sess=sess,
+#                                         name=self.checkpoint_dir + '/g_{}_init.npz'.format(tl.global_flag['mode']),
+#                                         network=self.net_g)
         ###========================= initialize G ====================###
 
         ## initialize G
         n_epoch_init = config.TRAIN.n_epoch_init
         for epoch in range(0, n_epoch_init + 1):
             epoch_time = time.time()
-            # mse_loss = tl.cost.mean_squared_error(self.output_image, self.t_target_image[:t],is_mean=True)
-            # self.unrolled_mse_total_loss = mse_lossime = time.time()
             total_mse_loss, n_iter = 0, 0
             steps = config.TRAIN.data_points // self.batch_size
             for idx in range(steps):
@@ -174,17 +169,22 @@ class RecurrentSRGAN():
 
     def train(self, video_set):
 
+        global_step = -1
+        f_lpips = open("/home/hamada/Video-Enhancement/srgans/lpips.txt", "a")
+        f_loss = open("/home/hamada/Video-Enhancement/srgans/loss.txt", "a")
+
         lr_test, hr_test, flow_test = self.sample_batch_for_test(video_set)
         ###========================== RESTORE MODEL =============================###
         sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=False))
         tl.layers.initialize_global_variables(sess)
-        if tl.files.load_and_assign_npz(sess=sess, name=self.checkpoint_dir + '/g_{}.npz'.format(tl.global_flag['mode']),
-                                        network=self.net_g) is False:
-            tl.files.load_and_assign_npz(sess=sess,
-                                         name=self.checkpoint_dir + '/g_{}_init.npz'.format(tl.global_flag['mode']),
-                                         network=self.net_g)
-        tl.files.load_and_assign_npz(sess=sess, name=self.checkpoint_dir + '/d_{}.npz'.format(tl.global_flag['mode']),
-                                     network=self.net_d)
+        check_point = tf.train.get_checkpoint_state(self.checkpoint_dir)
+        saver = tf.train.Saver(max_to_keep=2)
+        if check_point and check_point.model_checkpoint_path:
+                logging.info('Restored to a checkpoint stored at {}'.format(check_point.model_checkpoint_path))
+                saver.restore(sess, check_point.model_checkpoint_path)
+                global_step = int(check_point.model_checkpoint_path.split('/')[-1].split('-')[-1])
+        else:
+                logging.info('No checkpoint is found for SRGAN to load')
 
         ## adversarial learning (SRGAN)
         n_epoch = config.TRAIN.n_epoch
@@ -212,6 +212,7 @@ class RecurrentSRGAN():
             total_d_loss, total_g_loss, n_iter = 0, 0, 0
             steps = config.TRAIN.data_points // self.batch_size
             for idx in range(steps):
+                    global_step = global_step + 1
                     step_time = time.time()
                     lr_batches, hr_batches, flow_input = video_set.next_data()
                     ## update D
@@ -226,11 +227,20 @@ class RecurrentSRGAN():
                     logging.info("Epoch [%2d/%2d] %4d time: %4.4fs, d_loss: %.8f g_loss: %.8f (mse: %.6f)  (t_loss:%.6f)" %
                           (epoch, n_epoch, n_iter, time.time() - step_time, errD/self.time_steps, errG/self.time_steps,
                              errM/self.time_steps, errT /self.time_steps))
+
+                    f_loss.write("Epoch [%2d/%2d] %4d time: %4.4fs, d_loss: %.8f g_loss: %.8f (mse: %.6f)  (t_loss:%.6f) \n" %
+                          (epoch, n_epoch, n_iter, time.time() - step_time, errD/self.time_steps, errG/self.time_steps,
+                             errM/self.time_steps, errT /self.time_steps))
+
                     total_d_loss += errD
                     total_g_loss += errG
                     n_iter += 1
 
                     logging.info("[*] Epoch: [%2d/%2d] time: %4.4fs, d_loss: %.8f g_loss: %.8f" % (
+                        epoch, n_epoch, time.time() - epoch_time, total_d_loss / n_iter,
+                        total_g_loss / n_iter))
+
+                    f_loss.write("[*] Epoch: [%2d/%2d] time: %4.4fs, d_loss: %.8f g_loss: %.8f \n" % (
                         epoch, n_epoch, time.time() - epoch_time, total_d_loss / n_iter,
                         total_g_loss / n_iter))
 
@@ -243,13 +253,13 @@ class RecurrentSRGAN():
                         out = (out - np.min(out)) / np.ptp(out)
                         lpips_dist = self.evaluate_with_lpips_metric(out, hr_test)
                         logging.info("Lpips Metric %s" % (str(lpips_dist)[1:-1]))
-
+                        f_lpips.write ("Lpips Metric %s \n" % (str(lpips_dist)[1:-1]))
                         #save model
                     if (idx != 0) and (idx % 50 == 0):
-                        tl.files.save_npz(self.net_g.all_params, name=self.checkpoint_dir + '/g_{}.npz'.format(tl.global_flag['mode']),
-                                          sess=sess)
-                        tl.files.save_npz(self.net_d.all_params, name=self.checkpoint_dir + '/d_{}.npz'.format(tl.global_flag['mode']),
-                                          sess=sess)
+                       saver.save(sess, self.checkpoint_dir + 'srgan.ckpt', global_step=global_step)
+
+        f_lpips.close()
+        f_loss.close()
 
     def sample_batch_for_test(self, video_set):
 
