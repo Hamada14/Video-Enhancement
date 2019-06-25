@@ -101,22 +101,18 @@ if __name__ == "__main__":
 
         sr_video_size = (hr_width, hr_height)
 
-        lr_video_size = (lr_height, lr_height)
+        lr_video_size = (lr_width, lr_height)
 
         sr_video_writer = cv2.VideoWriter(OUTPUT_VIDEO, cv2.VideoWriter_fourcc('M', 'P', '4', 'V'), fps, sr_video_size)
         lr_video_writer = cv2.VideoWriter(LR_VIDEO, cv2.VideoWriter_fourcc('M', 'P', '4', 'V'), fps, lr_video_size)
         hr_video_writer = cv2.VideoWriter(HR_VIDEO, cv2.VideoWriter_fourcc('M', 'P', '4', 'V'), fps, sr_video_size)
 
         success,hr_frame = videoCapture.read()
-        test_bar = tqdm(range(int(frame_numbers)), desc='[processing video and saving result videos]')
-        print(hr_width)
-        print(lr_width)
-        print(hr_height)
-        print(lr_height)
+        test_bar = tqdm(range(int(frame_numbers)), desc='[processing video and saving result videos]') 
         model = RecurrentSRGAN(high_width = hr_width, high_height = hr_height, low_width = lr_width, low_height = lr_height, batch_size = 1, time_steps = 1)
         flow_model = FlowModelWrapper.getInstance()
         initial_hr_estimate = tf.constant(0.0 ,shape = [1, hr_width, hr_height, 3])
-        initial_lr_estimate = np.zeros([lr_width, lr_height, 3])
+        initial_lr_estimate = np.zeros([lr_height, lr_width, 3])
        
         for index in test_bar:
             if index > 4:
