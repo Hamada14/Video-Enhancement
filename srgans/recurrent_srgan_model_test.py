@@ -69,7 +69,7 @@ class RecurrentSRGAN():
 
                 # self.print_estimate = tf.print(self.output_image, [self.output_image])
                 self.output_list.append(self.output_image)
-                self.output_images = tf.stack(self.output_list)
+            self.output_images = tf.stack(self.output_list)
 
             tl.global_flag['mode'] = 'srgan'
             self.save_dir_ginit = "samples/{}_ginit".format(tl.global_flag['mode'])

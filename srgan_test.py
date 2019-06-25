@@ -25,11 +25,6 @@ import cvbase as cvb
 import tensorflow as tf
 
 
-def trunc(tensor):
-    # tensor = tensor.clone()
-    tensor[tensor < 0] = 0
-    tensor[tensor > 1] = 1
-    return tensor
 
 def clip_output_img(hr_out):
     #hr_out = trunc(hr_out.clone())
@@ -79,11 +74,11 @@ if __name__ == "__main__":
 #        opt = parser.parse_args()
 
         UPSCALE_FACTOR = 4
-        VIDEO_NAME =  '/home/ubuntu/Video-Enhancement/data_set/polyflowpi.mp4'
+        VIDEO_NAME =  '/home/ubuntu/Video-Enhancement/data_set/Sample1280.mp4'                                                                                          
         #MODEL_NAME = opt.model
-        OUTPUT_VIDEO = 'output.mp4'
-        LR_VIDEO = 'low.mp4'
-        HR_VIDEO = 'high.mp4'
+        OUTPUT_VIDEO = '/home/ubuntu/Video-Enhancement//output1.mp4'
+        LR_VIDEO = '/home/ubuntu/Video-Enhancement/low1.mp4'
+        HR_VIDEO = '/home/ubuntu/Video-Enhancement/high1.mp4'
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
         videoCapture = cv2.VideoCapture(VIDEO_NAME)
@@ -107,31 +102,30 @@ if __name__ == "__main__":
         test_bar = tqdm(range(int(frame_numbers)), desc='[processing video and saving result videos]') 
         model = RecurrentSRGAN(high_width = hr_width, high_height = hr_height, low_width = lr_width, low_height = lr_height, batch_size = 1, time_steps = 1)
         flow_model = FlowModelWrapper.getInstance()
-        initial_hr_estimate = tf.constant(0.0 ,shape = [1, hr_height, hr_width, 3])
+        initial_hr_estimate = np.zeros([1, hr_height, hr_width, 3])
         initial_lr_estimate = np.zeros([lr_height, lr_width, 3])
        
         for index in test_bar:
-            if index > 4:
+            if index > 1200:
                 break
             if success:
                 hr_frame = hr_frame[0:hr_height, 0:hr_width, :]
                 lr_frame = hr_to_lr(hr_frame)
-                print('lowwwwwwwwwwwww')
-                print(np.shape(lr_frame))
-                lr_image = Variable(ToTensor()(lr_frame)).unsqueeze(0).unsqueeze(0).float()
+                lr_image = np.expand_dims(np.expand_dims(lr_frame, axis=0), axis=0)
+                #lr_image 
                 if (index == 0):
                    prev_est = initial_hr_estimate
                    flow_estimate = flow_model.inference_imgs(initial_lr_estimate, lr_frame)
-                   print('flowwwwwwwwwwwwwwwwwwww')
-                   print(np.shape(flow_estimate))
+                   
                 else:
-                    flow_estimate = flow_model.inference_imgs(prev_input, lr_frame)
-                est_hr, prev_input = model(prev_est, lr_frame, flow_estimate)
+                    flow_estimate = flow_model.inference_imgs(prev_input[0][0], lr_frame)
+                flow_estimate = np.expand_dims(np.expand_dims(flow_estimate , axis=0), axis=0)
+                est_hr, prev_input = model.estimate_frames(prev_est, lr_image, flow_estimate)
                 sr_video_writer.write(clip_output_img(est_hr))
-                lr_video_writer.write(clip_lr(ToTensor()(lr_frame)))
-                r_video_writer.write(hr_frame)
+                lr_video_writer.write(clip_lr((lr_frame)))
+                hr_video_writer.write(hr_frame)
                 success, hr_frame = videoCapture.read()
-                prev_est = est_hr
+                prev_est = est_hr[0]
         sr_video_writer.release()
         lr_video_writer.release()
         hr_video_writer.release()

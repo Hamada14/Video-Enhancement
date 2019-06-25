@@ -4,7 +4,7 @@ import logging
 import tensorflow as tf
 import tensorlayer as tl
 from srgans.tensorlayer.layers import *
-
+import numpy as np
 # from tensorflow.python.ops import variable_scope as vs
 # from tensorflow.python.ops import math_ops, init_ops, array_ops, nn
 # from tensorflow.python.util import nest
@@ -13,11 +13,13 @@ from srgans.tensorlayer.layers import *
 # https://github.com/david-gpu/srez/blob/master/srez_model.py
 
 
-def SRGAN_generator(raw_frame, wrapped_frame,  reuse=False):
+def SRGAN_generator(raw_frame, wrapped_frame,  reuse=False, upscale_factor=4):
     w_init = None # tf.random_normal_initializer(stddev=0.02)
     b_init = None  # tf.constant_initializer(value=0.0)
     with tf.variable_scope("SRGAN_g", reuse=reuse) as vs:
         set_name_reuse(reuse)
+        lr_width = np.shape(raw_frame)[2]
+        lr_height = np.shape(raw_frame)[1]
         wrapped_frame = tf.space_to_depth(wrapped_frame, 4)
         input = tf.concat([raw_frame, wrapped_frame], 3)
         n = InputLayer(input, name='in')
@@ -32,14 +34,15 @@ def SRGAN_generator(raw_frame, wrapped_frame,  reuse=False):
 
         # Upscaling
         for i in range(2):
-            nn = tf.image.resize_nearest_neighbor(n.outputs, [128*(i+1),128*(i+1)])
+           
+            nn = tf.image.resize_nearest_neighbor(n.outputs, [lr_height*2*(i+1), lr_width*2*(i+1)])
             nn = InputLayer(nn, name = 'after_upscaling/%s' % i)           
             nn = Conv2d(nn, 256, (3, 3), (1, 1), act=None, padding='SAME', W_init=w_init, b_init=b_init, name='n256s1/c3/%s' % i)
             nn = tf.nn.relu(nn.outputs)
             n = InputLayer(nn, name = 'after_relu/%s' % i)
         n = Conv2d(n, 3, (3, 3), (1, 1), act=None, padding='SAME',   W_init=w_init, b_init=b_init, name='n3s1/c4')
 
-        temp = tf.image.resize_nearest_neighbor(raw_frame,[256,256])
+        temp = tf.image.resize_nearest_neighbor(raw_frame,[lr_height*upscale_factor, lr_width*upscale_factor])
         temp = InputLayer(temp, name = 'raw_frame_After_bicubic')
         n = ElementwiseLayer([n, temp], tf.add, 'b_residual_add')
     return n, n.outputs
