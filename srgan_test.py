@@ -116,10 +116,14 @@ if __name__ == "__main__":
             if success:
                 hr_frame = hr_frame[0:hr_height, 0:hr_width, :]
                 lr_frame = hr_to_lr(hr_frame)
-                lr_image = Variable(ToTensor()(lr_frame)).unsqueeze(0).float()
+                print('lowwwwwwwwwwwww')
+                print(np.shape(lr_frame))
+                lr_image = Variable(ToTensor()(lr_frame)).unsqueeze(0).unsqueeze(0).float()
                 if (index == 0):
                    prev_est = initial_hr_estimate
                    flow_estimate = flow_model.inference_imgs(initial_lr_estimate, lr_frame)
+                   print('flowwwwwwwwwwwwwwwwwwww')
+                   print(np.shape(flow_estimate))
                 else:
                     flow_estimate = flow_model.inference_imgs(prev_input, lr_frame)
                 est_hr, prev_input = model(prev_est, lr_frame, flow_estimate)

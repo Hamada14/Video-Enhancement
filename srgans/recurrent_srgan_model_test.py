@@ -33,7 +33,7 @@ class RecurrentSRGAN():
             logging.info("starting define model")
 
             #input LR batch image placeholder
-            self.t_image = tf.placeholder('float32', [self.batch_size, self.time_steps, self.high_height, self.low_width,3],
+            self.t_image = tf.placeholder('float32', [self.batch_size, self.time_steps, self.low_height, self.low_width,3],
                                           name='t_image_input_to_SRGAN_generator')
             # input HR batch image placeholder
             self.t_target_image = tf.placeholder('float32', [self.batch_size, self.time_steps, self.high_height, self.high_width, 3],
