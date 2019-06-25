@@ -32,24 +32,20 @@ def trunc(tensor):
     return tensor
 
 def clip_output_img(hr_out):
-    hr_out = trunc(hr_out.clone())
-    hr_out = hr_out.cpu()
-    out_img = hr_out.data[0].numpy()
-    out_img *= 255.0
-    return (np.uint8(out_img)).transpose((1, 2, 0))
-
-def clip_lr(hr_out):
-    hr_out = trunc(hr_out.clone())
-    hr_out = hr_out.cpu()
-    out_img = hr_out.data[0].numpy()
+    #hr_out = trunc(hr_out.clone())
+    out_img = np.copy(hr_out)
+    out_img = (out_img - np.min(out_img)) / np.ptp(out_img)
+    #hr_out = hr_out.cpu()
+    out_img = out_img[0][0]
     out_img *= 255.0
     return (np.uint8(out_img))
 
-def clip_hr(hr_out):
-    out_img = hr_out
+def clip_lr(lr_out):
+    #hr_out = trunc(hr_out.clone())
+    #hr_out = hr_out.cpu()
+    out_img = np.copy(lr_out)
     out_img *= 255.0
     return (np.uint8(out_img))
-
 
 def downsample_frame(image, factor):
     new_image = np.zeros((int(image.shape[0] / factor), int(image.shape[1] / factor), 3))
@@ -111,7 +107,7 @@ if __name__ == "__main__":
         test_bar = tqdm(range(int(frame_numbers)), desc='[processing video and saving result videos]') 
         model = RecurrentSRGAN(high_width = hr_width, high_height = hr_height, low_width = lr_width, low_height = lr_height, batch_size = 1, time_steps = 1)
         flow_model = FlowModelWrapper.getInstance()
-        initial_hr_estimate = tf.constant(0.0 ,shape = [1, hr_width, hr_height, 3])
+        initial_hr_estimate = tf.constant(0.0 ,shape = [1, hr_height, hr_width, 3])
         initial_lr_estimate = np.zeros([lr_height, lr_width, 3])
        
         for index in test_bar:
@@ -127,10 +123,9 @@ if __name__ == "__main__":
                 else:
                     flow_estimate = flow_model.inference_imgs(prev_input, lr_frame)
                 est_hr, prev_input = model(prev_est, lr_frame, flow_estimate)
-                print(est_hr)
-                # sr_video_writer.write(clip_output_img(est_hr))
-                # lr_video_writer.write(clip_lr(ToTensor()(lr_frame)))
-                # hr_video_writer.write(hr_frame)
+                sr_video_writer.write(clip_output_img(est_hr))
+                lr_video_writer.write(clip_lr(ToTensor()(lr_frame)))
+                r_video_writer.write(hr_frame)
                 success, hr_frame = videoCapture.read()
                 prev_est = est_hr
         sr_video_writer.release()

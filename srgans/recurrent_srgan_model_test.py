@@ -33,17 +33,17 @@ class RecurrentSRGAN():
             logging.info("starting define model")
 
             #input LR batch image placeholder
-            self.t_image = tf.placeholder('float32', [self.batch_size, self.time_steps, self.low_width, self.low_height, 3],
+            self.t_image = tf.placeholder('float32', [self.batch_size, self.time_steps, self.high_height, self.low_width,3],
                                           name='t_image_input_to_SRGAN_generator')
             # input HR batch image placeholder
-            self.t_target_image = tf.placeholder('float32', [self.batch_size, self.time_steps, self.high_width, self.high_height, 3],
+            self.t_target_image = tf.placeholder('float32', [self.batch_size, self.time_steps, self.high_height, self.high_width, 3],
                                                  name='t_target_image')
-            self.output_images = tf.Variable('float32', [self.batch_size, self.time_steps, self.high_width, self.high_height, 3],
+            self.output_images = tf.Variable('float32', [self.batch_size, self.time_steps, self.high_height, self.high_width, 3],
                                                  name='output_image')
             #previous output frame after wrapping with optical flow
             # self.initializer = tf.constant(0.0 ,shape = [self.batch_size, self.high_width, self.high_height, 3])
-            self.initial_estimate = tf.placeholder('float32',[self.batch_size, self.high_width, self.high_height, 3], name= 'initial_estimate')
-            self.raw_optical_flow = tf.placeholder('float32',[self.batch_size, self.time_steps, self.low_width, self.low_height, 2]
+            self.initial_estimate = tf.placeholder('float32',[self.batch_size, self.high_height, self.high_width, 3], name= 'initial_estimate')
+            self.raw_optical_flow = tf.placeholder('float32',[self.batch_size, self.time_steps, self.low_height,self.low_width, 2]
                                             , name='raw_optical_flow')
 
             self.unrolled_d_total_loss = tf.Variable(0.0, name="D_unrolled_loss")
@@ -56,51 +56,20 @@ class RecurrentSRGAN():
             #Unrolling the GAN model for t steps
             for t in range(self.time_steps):
                 self.t_optical_flow = tf.image.resize_bilinear(tf.reshape(
-                tf.slice(self.raw_optical_flow, [0, t, 0, 0, 0], [self.batch_size, 1, -1, -1, -1]), [self.batch_size, self.low_width, self.low_height,2])
-                , tf.constant([self.high_width, self.high_height]))
+                tf.slice(self.raw_optical_flow, [0, t, 0, 0, 0], [self.batch_size, 1, -1, -1, -1]), [self.batch_size,  self.low_height, self.low_width,2])
+                , tf.constant([self.high_height, self.high_width]))
                 if (t == 0):
                     self.t_wrapped_image = tf.contrib.image.dense_image_warp(self.initial_estimate, self.t_optical_flow)
                 else:
 
                     self.t_wrapped_image = tf.contrib.image.dense_image_warp(self.output_image, self.t_optical_flow)
-                time_step_target_image = tf.reshape(tf.slice(self.t_target_image, [0, t, 0, 0, 0], [self.batch_size, 1, -1, -1, -1]),[self.batch_size, self.high_width, self.high_height, 3])
-                time_step_image = tf.reshape(tf.slice(self.t_image, [0, t, 0, 0, 0], [self.batch_size, 1, -1, -1, -1]),[self.batch_size, self.low_width, self.low_height, 3])
+                time_step_target_image = tf.reshape(tf.slice(self.t_target_image, [0, t, 0, 0, 0], [self.batch_size, 1, -1, -1, -1]),[self.batch_size, self.high_height, self.high_width, 3])
+                time_step_image = tf.reshape(tf.slice(self.t_image, [0, t, 0, 0, 0], [self.batch_size, 1, -1, -1, -1]),[self.batch_size, self.low_height, self.low_width, 3])
                 self.net_g , self.output_image = SRGAN_generator(time_step_image, self.t_wrapped_image ,reuse=tf.AUTO_REUSE)
 
                 # self.print_estimate = tf.print(self.output_image, [self.output_image])
                 self.output_list.append(self.output_image)
-            #     self.net_d, self.logits_real = SRGAN_discriminator(time_step_target_image,
-            #                                                        is_train=True, reuse=tf.AUTO_REUSE)
-            #     _, self.logits_fake = SRGAN_discriminator(self.output_image, is_train=True, reuse=tf.AUTO_REUSE)
-            #     d_loss1 = tl.cost.sigmoid_cross_entropy(self.logits_real, tf.ones_like(self.logits_real), name='d1')
-            #     d_loss2 = tl.cost.sigmoid_cross_entropy(self.logits_fake, tf.zeros_like(self.logits_fake), name='d2')
-            #     d_loss = d_loss1 + d_loss2
-            #     self.unrolled_d_total_loss += d_loss
-            #     # TODO check multiply here or at the end only multiply total loss???
-            #     g_gan_loss = tl.cost.sigmoid_cross_entropy(self.logits_fake, tf.ones_like(self.logits_fake), name='g')
-            #     mse_loss = tl.cost.mean_squared_error(self.output_image, time_step_target_image, is_mean=True)
-            #     t_loss = tl.cost.mean_squared_error(self.output_image, self.t_wrapped_image, is_mean=True)
-            #     self.unrolled_mse_total_loss += mse_loss
-            #     self.unrolled_gan_total_loss += g_gan_loss
-            #     self.unrolled_tloss_total_loss += t_loss
-            #     self.net_g.print_params(False)
-            #     self.net_d.print_params(False)
-            # #self.unrolled_mse_total_loss = self.unrolled_mse_total_loss / self.time_steps
-            # self.unrolled_g_total_loss = (self.unrolled_mse_total_loss + 3e-3 * self.unrolled_gan_total_loss + 1e-2 * self.unrolled_tloss_total_loss)/self.time_steps
-            self.output_images = tf.stack(self.output_list)
-            # self.g_vars = tl.layers.get_variables_with_name('SRGAN_g', True, True)
-            # self.d_vars = tl.layers.get_variables_with_name('SRGAN_d', True, True)
-            #
-            #
-            # with tf.variable_scope('learning_rate'):
-            #     self.lr_v = tf.Variable(self.lr_init, trainable=False)
-            # ## Pretrain with mse first
-            # self.g_init_train = tf.train.AdamOptimizer(self.lr_v, beta1= self.beta1).minimize(self.unrolled_mse_total_loss, var_list=self.g_vars)
-            #
-            # ## SRGAN train with adversrial loss next
-            #
-            # self.g_train = tf.train.AdamOptimizer(self.lr_v, beta1= self.beta1).minimize(self.unrolled_g_total_loss, var_list=self.g_vars)
-            # self.d_train = tf.train.AdamOptimizer(self.lr_v, beta1= self.beta1).minimize(self.unrolled_d_total_loss, var_list= self.d_vars)
+                self.output_images = tf.stack(self.output_list)
 
             tl.global_flag['mode'] = 'srgan'
             self.save_dir_ginit = "samples/{}_ginit".format(tl.global_flag['mode'])
