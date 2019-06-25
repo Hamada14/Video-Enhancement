@@ -70,22 +70,24 @@ def hr_to_lr(hr_frame):
 
 
 if __name__ == "__main__":
+    print('hey')
     with torch.no_grad():
-        parser = argparse.ArgumentParser(description='Test Single Video')
-        parser.add_argument('--video', type=str, help='test low resolution video name')
-        parser.add_argument('--model', type=str, help='generator model epoch name')
-        parser.add_argument('--output', type=str, help='output video path')
-        parser.add_argument('--lr', type=str, help='low resolution video path')
-        parser.add_argument('--hr', type=str, help='high resolution video path')
+        print("started")
+#        parser = argparse.ArgumentParser(description='Test Single Video')
+#        parser.add_argument('video', type=str, help='test low resolution video name')
+       # parser.add_argument('--model', type=str, help='generator model epoch name')
+#        parser.add_argument('output', type=str, help='output video path')
+#        parser.add_argument('lr', type=str, help='low resolution video path')
+#        parser.add_argument('hr', type=str, help='high resolution video path')
 
-        opt = parser.parse_args()
+#        opt = parser.parse_args()
 
         UPSCALE_FACTOR = 4
-        VIDEO_NAME = opt.video
-        MODEL_NAME = opt.model
-        OUTPUT_VIDEO = opt.output
-        LR_VIDEO = opt.lr
-        HR_VIDEO = opt.hr
+        VIDEO_NAME =  '/home/ubuntu/Video-Enhancement/data_set/polyflowpi.mp4'
+        #MODEL_NAME = opt.model
+        OUTPUT_VIDEO = 'output.mp4'
+        LR_VIDEO = 'low.mp4'
+        HR_VIDEO = 'high.mp4'
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
         videoCapture = cv2.VideoCapture(VIDEO_NAME)
@@ -107,7 +109,10 @@ if __name__ == "__main__":
 
         success,hr_frame = videoCapture.read()
         test_bar = tqdm(range(int(frame_numbers)), desc='[processing video and saving result videos]')
-
+        print(hr_width)
+        print(lr_width)
+        print(hr_height)
+        print(lr_height)
         model = RecurrentSRGAN(high_width = hr_width, high_height = hr_height, low_width = lr_width, low_height = lr_height, batch_size = 1, time_steps = 1)
         flow_model = FlowModelWrapper.getInstance()
         initial_hr_estimate = tf.constant(0.0 ,shape = [1, hr_width, hr_height, 3])

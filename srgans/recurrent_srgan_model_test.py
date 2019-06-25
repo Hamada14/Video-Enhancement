@@ -57,9 +57,9 @@ class RecurrentSRGAN():
             for t in range(self.time_steps):
                 self.t_optical_flow = tf.image.resize_bilinear(tf.reshape(
                 tf.slice(self.raw_optical_flow, [0, t, 0, 0, 0], [self.batch_size, 1, -1, -1, -1]), [self.batch_size, self.low_width, self.low_height,2])
-                , tf.constant([256, 256]))
+                , tf.constant([self.high_width, self.high_height]))
                 if (t == 0):
-                    self.t_wrapped_image = tf.contrib.image.dense_image_warp(self.initializer, self.t_optical_flow)
+                    self.t_wrapped_image = tf.contrib.image.dense_image_warp(self.initial_estimate, self.t_optical_flow)
                 else:
 
                     self.t_wrapped_image = tf.contrib.image.dense_image_warp(self.output_image, self.t_optical_flow)
