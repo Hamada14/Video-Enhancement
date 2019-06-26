@@ -127,3 +127,5 @@ def down_sample_image(image, factor):
             col += factor
         row += factor
     return new_image
+
+

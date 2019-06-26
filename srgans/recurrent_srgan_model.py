@@ -3,6 +3,7 @@ from datetime import datetime
 import numpy as np
 from time import localtime, strftime
 import scipy
+import math
 
 
 import tensorflow as tf
@@ -279,3 +280,4 @@ class RecurrentSRGAN():
         lpips_fn = session.make_callable(lpips(image0_ph,image1_ph),[image0_ph,image1_ph])
         distance = lpips_fn(hr, estimated_hr)
         return distance
+

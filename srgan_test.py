@@ -8,6 +8,7 @@ from PIL import Image
 from torch.autograd import Variable
 from torchvision.transforms import ToTensor, ToPILImage
 from tqdm import tqdm
+import logging
 
 from srgans.recurrent_srgan_model_test import RecurrentSRGAN 
 from flow_model_wrapper import FlowModelWrapper
@@ -55,8 +56,8 @@ def downsample_frame(image, factor):
 
 
 def hr_to_lr(hr_frame):
-    blurred_frame = cv2.GaussianBlur(hr_frame, (0, 0), 1.5, 1.5, 0)
-    lr_frame = downsample_frame(blurred_frame, 4)
+    #blurred_frame = cv2.GaussianBlur(hr_frame, (0, 0), 1.5, 1.5, 0)
+    lr_frame = downsample_frame(hr_frame, 4)
     return lr_frame
 
 
@@ -76,7 +77,7 @@ if __name__ == "__main__":
         UPSCALE_FACTOR = 4
         VIDEO_NAME =  '/home/ubuntu/Video-Enhancement/data_set/Sample1280.mp4'                                                                                          
         #MODEL_NAME = opt.model
-        OUTPUT_VIDEO = '/home/ubuntu/Video-Enhancement//output1.mp4'
+        OUTPUT_VIDEO = '/home/ubuntu/Video-Enhancement/output_gan_without_blur.mp4'
         LR_VIDEO = '/home/ubuntu/Video-Enhancement/low1.mp4'
         HR_VIDEO = '/home/ubuntu/Video-Enhancement/high1.mp4'
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -104,7 +105,10 @@ if __name__ == "__main__":
         flow_model = FlowModelWrapper.getInstance()
         initial_hr_estimate = np.zeros([1, hr_height, hr_width, 3])
         initial_lr_estimate = np.zeros([lr_height, lr_width, 3])
-       
+
+        lpips_metric = 0
+        psnr_metric = 0
+
         for index in test_bar:
             if index > 1200:
                 break
@@ -124,8 +128,17 @@ if __name__ == "__main__":
                 sr_video_writer.write(clip_output_img(est_hr))
                 lr_video_writer.write(clip_lr((lr_frame)))
                 hr_video_writer.write(hr_frame)
+
+                estimated_hr_norm = (est_hr - np.min(est_hr)) / np.ptp(est_hr)
+                lpips_metric += model.evaluate_with_lpips_metric(estimated_hr_norm, hr_frame)
+                psnr_metric += model.evaluate_with_psnr_metric(estimated_hr_norm, hr_frame)
+
                 success, hr_frame = videoCapture.read()
                 prev_est = est_hr[0]
         sr_video_writer.release()
         lr_video_writer.release()
         hr_video_writer.release()
+
+        logging.info("LPIPS %.8f " % (lpips_metric/frame_numbers))
+        logging.info("PSNR %.8f " % (psnr_metric / frame_numbers))
+

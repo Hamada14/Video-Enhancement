@@ -4,7 +4,7 @@ import numpy as np
 from time import localtime, strftime
 import scipy
 
-
+import math
 import tensorflow as tf
 import tensorlayer as tl
 import logging
@@ -261,3 +261,10 @@ class RecurrentSRGAN():
         lpips_fn = session.make_callable(lpips(image0_ph,image1_ph),[image0_ph,image1_ph])
         distance = lpips_fn(hr, estimated_hr)
         return distance
+
+    def evaluate_with_psnr_metric(self, estimated_hr, hr):
+        mse = np.mean((estimated_hr - hr) ** 2)
+        if mse == 0:
+            return 100
+        PIXEL_MAX = 255.0
+        return 20 * math.log10(PIXEL_MAX / math.sqrt(mse))
